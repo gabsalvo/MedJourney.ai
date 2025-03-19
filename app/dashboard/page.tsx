@@ -6,13 +6,16 @@ import { ChartAreaInteractive } from "@/components/chart-area-interactive";
 import { DataTable } from "@/components/data-table";
 import { ProjectsView } from "@/components/projects-view";
 import { AskMedAIView } from "@/components/ask-med-ai-view";
+import { DataLibraryView } from "@/components/data-library-view";
+import { ReportsView } from "@/components/reports-view";
+import { SettingsView } from "@/components/settings-view"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { SiteHeader } from "@/components/site-header";
 import { SectionCards } from "@/components/section-cards";
 import data from "./data.json";
 
 export default function Page() {
-    const [activeView, setActiveView] = useState<"dashboard" | "projects" | "askMedAI">("dashboard");
+    const [activeView, setActiveView] = useState<"dashboard" | "projects" | "askMedAI" | "dataLibrary" | "reports" | "settings">("dashboard");
 
     return (
         <SidebarProvider>
@@ -30,6 +33,9 @@ export default function Page() {
                     )}
                     {activeView === "projects" && <ProjectsView />}
                     {activeView === "askMedAI" && <AskMedAIView />}
+                    {activeView === "dataLibrary" && <DataLibraryView />}
+                    {activeView === "reports" && <ReportsView />}
+                    {activeView === "settings" && <SettingsView />}
                 </div>
             </SidebarInset>
         </SidebarProvider>

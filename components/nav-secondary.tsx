@@ -13,13 +13,16 @@ import {
 
 export function NavSecondary({
                                  items,
+                                 setActiveView,
                                  ...props
                              }: {
     items: {
-        title: string
-        url: string
-        icon: LucideIcon
-    }[]
+        title: string;
+        view?: "settings"; // ✅ Only settings is dynamic
+        url?: string; // ✅ External link for Get Help
+        icon: LucideIcon;
+    }[];
+    setActiveView: (view: "dashboard" | "projects" | "askMedAI" | "dataLibrary" | "reports" | "settings") => void;
 } & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
     return (
         <SidebarGroup {...props}>
@@ -27,12 +30,23 @@ export function NavSecondary({
                 <SidebarMenu>
                     {items.map((item) => (
                         <SidebarMenuItem key={item.title}>
-                            <SidebarMenuButton asChild>
-                                <a href={item.url}>
+                            {item.view ? (
+                                // ✅ Only call setActiveView if item.view is defined
+                                <SidebarMenuButton
+                                    onClick={() => item.view && setActiveView(item.view)} className="cursor-pointer"
+                                >
                                     <item.icon />
                                     <span>{item.title}</span>
-                                </a>
-                            </SidebarMenuButton>
+                                </SidebarMenuButton>
+                            ) : (
+                                // ✅ External link for "Get Help"
+                                <SidebarMenuButton asChild>
+                                    <a href={item.url} target="_blank">
+                                        <item.icon />
+                                        <span>{item.title}</span>
+                                    </a>
+                                </SidebarMenuButton>
+                            )}
                         </SidebarMenuItem>
                     ))}
                 </SidebarMenu>

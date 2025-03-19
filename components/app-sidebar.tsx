@@ -28,7 +28,7 @@ import {
 
 // Define Props to accept setActiveView
 type AppSidebarProps = {
-    setActiveView: (view: "dashboard" | "projects" | "askMedAI") => void;
+    setActiveView: (view: "dashboard" | "projects" | "askMedAI" | "dataLibrary" | "reports" | "settings") => void;
 };
 
 const data = {
@@ -55,11 +55,11 @@ const data = {
         },
     ],
     navSecondary: [
-        {
+        /*{
             title: "Settings",
-            url: "#",
+            view: "settings" as const,
             icon: SettingsIcon,
-        },
+        },*/
         {
             title: "Get Help",
             url: "https://medjourney-ai.hashnode.space/",
@@ -69,12 +69,12 @@ const data = {
     documents: [
         {
             name: "Data Library",
-            url: "#",
+            view: "dataLibrary" as const,
             icon: DatabaseIcon,
         },
         {
             name: "Reports",
-            url: "#",
+            view: "reports" as const,
             icon: ClipboardListIcon,
         },
     ],
@@ -102,11 +102,11 @@ export function AppSidebar({ setActiveView, ...props }: AppSidebarProps) {
             </SidebarHeader>
             <SidebarContent>
                 <NavMain items={data.navMain} setActiveView={setActiveView} /> {/* ✅ Pass setActiveView */}
-                <NavDocuments items={data.documents} />
-                <NavSecondary items={data.navSecondary} className="mt-auto" />
+                <NavDocuments items={data.documents} setActiveView={setActiveView} />
+                <NavSecondary items={data.navSecondary}  setActiveView={setActiveView} className="mt-auto" />
             </SidebarContent>
             <SidebarFooter>
-                <NavUser user={data.user} />
+                <NavUser/>
             </SidebarFooter>
         </Sidebar>
     );
