@@ -1,24 +1,21 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 import {
-    CameraIcon,
     ClipboardListIcon,
     DatabaseIcon,
-    FileCodeIcon,
-    FileTextIcon,
     FolderIcon,
     HelpCircleIcon,
     LayoutDashboardIcon,
     SettingsIcon,
     SparklesIcon,
-    ActivityIcon
-} from "lucide-react"
+    ActivityIcon,
+} from "lucide-react";
 
-import { NavDocuments } from "@/components/nav-documents"
-import { NavMain } from "@/components/nav-main"
-import { NavSecondary } from "@/components/nav-secondary"
-import { NavUser } from "@/components/nav-user"
+import { NavDocuments } from "@/components/nav-documents";
+import { NavMain } from "@/components/nav-main";
+import { NavSecondary } from "@/components/nav-secondary";
+import { NavUser } from "@/components/nav-user";
 import {
     Sidebar,
     SidebarContent,
@@ -27,7 +24,12 @@ import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
+
+// Define Props to accept setActiveView
+type AppSidebarProps = {
+    setActiveView: (view: "dashboard" | "projects" | "askMedAI") => void;
+};
 
 const data = {
     user: {
@@ -38,66 +40,18 @@ const data = {
     navMain: [
         {
             title: "Dashboard",
-            url: "#",
+            view: "dashboard" as const,
             icon: LayoutDashboardIcon,
         },
         {
             title: "Projects",
-            url: "#",
+            view: "projects" as const,
             icon: FolderIcon,
         },
         {
             title: "Ask Med.ai",
-            url: "#",
+            view: "askMedAI" as const,
             icon: SparklesIcon,
-        },
-    ],
-    navClouds: [
-        {
-            title: "Capture",
-            icon: CameraIcon,
-            isActive: true,
-            url: "#",
-            items: [
-                {
-                    title: "Active Proposals",
-                    url: "#",
-                },
-                {
-                    title: "Archived",
-                    url: "#",
-                },
-            ],
-        },
-        {
-            title: "Proposal",
-            icon: FileTextIcon,
-            url: "#",
-            items: [
-                {
-                    title: "Active Proposals",
-                    url: "#",
-                },
-                {
-                    title: "Archived",
-                    url: "#",
-                },
-            ],
-        },
-        {
-            title: "Prompts",
-            icon: FileCodeIcon,
-            url: "#",
-            items: [
-                {
-                    title: "Active Proposals",
-                    url: "#",
-                },
-                {
-                    title: "Archived",
-                    url: "#",
-                },
-            ],
         },
     ],
     navSecondary: [
@@ -108,7 +62,7 @@ const data = {
         },
         {
             title: "Get Help",
-            url: "#",
+            url: "https://medjourney-ai.hashnode.space/",
             icon: HelpCircleIcon,
         },
     ],
@@ -124,9 +78,9 @@ const data = {
             icon: ClipboardListIcon,
         },
     ],
-}
+};
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({ setActiveView, ...props }: AppSidebarProps) {
     return (
         <Sidebar collapsible="offcanvas" {...props}>
             <SidebarHeader>
@@ -138,15 +92,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                         >
                             <a href="#">
                                 <ActivityIcon className="h-5 w-5 text-blue-500" />
-                                <span className="text-base font-semibold">Med<span className="text-blue-500">Journey</span>.ai</span>
-
+                                <span className="text-base font-semibold">
+                                    Med<span className="text-blue-500">Journey</span>.ai
+                                </span>
                             </a>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                 </SidebarMenu>
             </SidebarHeader>
             <SidebarContent>
-                <NavMain items={data.navMain} />
+                <NavMain items={data.navMain} setActiveView={setActiveView} /> {/* ✅ Pass setActiveView */}
                 <NavDocuments items={data.documents} />
                 <NavSecondary items={data.navSecondary} className="mt-auto" />
             </SidebarContent>
@@ -154,5 +109,5 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <NavUser user={data.user} />
             </SidebarFooter>
         </Sidebar>
-    )
+    );
 }

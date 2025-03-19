@@ -1,36 +1,37 @@
-import { AppSidebar } from "@/components/app-sidebar"
-import { ChartAreaInteractive } from "@/components/chart-area-interactive"
-import { DataTable } from "@/components/data-table"
-import { SectionCards } from "@/components/section-cards"
-import { SiteHeader } from "@/components/site-header"
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
+"use client";
 
-import data from "./data.json"
-import type {Metadata} from "next";
-
-export const metadata: Metadata = {
-    title: "MedJourney.ai | Dashboard",
-    description: "Clustering medical data for deeper insights",
-};
+import { useState } from "react";
+import { AppSidebar } from "@/components/app-sidebar";
+import { ChartAreaInteractive } from "@/components/chart-area-interactive";
+import { DataTable } from "@/components/data-table";
+import { ProjectsView } from "@/components/projects-view";
+import { AskMedAIView } from "@/components/ask-med-ai-view";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { SiteHeader } from "@/components/site-header";
+import { SectionCards } from "@/components/section-cards";
+import data from "./data.json";
 
 export default function Page() {
+    const [activeView, setActiveView] = useState<"dashboard" | "projects" | "askMedAI">("dashboard");
+
     return (
         <SidebarProvider>
-            <AppSidebar variant="inset" />
+            <AppSidebar setActiveView={setActiveView} /> {/* ✅ Pass setActiveView */}
             <SidebarInset>
                 <SiteHeader />
-                <div className="flex flex-1 flex-col">
-                    <div className="@container/main flex flex-1 flex-col gap-2">
-                        <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
+                <div className="flex flex-1 flex-col p-6">
+                    {/* Dynamically render content based on activeView */}
+                    {activeView === "dashboard" && (
+                        <>
                             <SectionCards />
-                            <div className="px-4 lg:px-6">
-                                <ChartAreaInteractive />
-                            </div>
+                            <ChartAreaInteractive />
                             <DataTable data={data} />
-                        </div>
-                    </div>
+                        </>
+                    )}
+                    {activeView === "projects" && <ProjectsView />}
+                    {activeView === "askMedAI" && <AskMedAIView />}
                 </div>
             </SidebarInset>
         </SidebarProvider>
-    )
+    );
 }

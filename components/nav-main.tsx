@@ -1,7 +1,6 @@
 "use client"
 
 import { MailIcon, PlusCircleIcon, type LucideIcon } from "lucide-react"
-
 import { Button } from "@/components/ui/button"
 import {
     SidebarGroup,
@@ -11,15 +10,16 @@ import {
     SidebarMenuItem,
 } from "@/components/ui/sidebar"
 
-export function NavMain({
-                            items,
-                        }: {
+type NavMainProps = {
     items: {
         title: string
-        url: string
+        view: "dashboard" | "projects" | "askMedAI"
         icon?: LucideIcon
     }[]
-}) {
+    setActiveView: (view: "dashboard" | "projects" | "askMedAI") => void
+}
+
+export function NavMain({ items, setActiveView }: NavMainProps) {
     return (
         <SidebarGroup>
             <SidebarGroupContent className="flex flex-col gap-2">
@@ -45,8 +45,12 @@ export function NavMain({
                 <SidebarMenu>
                     {items.map((item) => (
                         <SidebarMenuItem key={item.title}>
-                            <SidebarMenuButton tooltip={item.title} className="cursor-pointer">
-                                {item.icon && <item.icon />}
+                            <SidebarMenuButton
+                                tooltip={item.title}
+                                onClick={() => setActiveView(item.view)}
+                                className="cursor-pointer min-w-8 flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-primary hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200 ease-in-out"
+                            >
+                                {item.icon && <item.icon className="w-5 h-5" />}
                                 <span>{item.title}</span>
                             </SidebarMenuButton>
                         </SidebarMenuItem>
