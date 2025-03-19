@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import { MailIcon, PlusCircleIcon, type LucideIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
@@ -9,6 +10,7 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import { QuickCreateDialog } from "@/components/quick-create-dialog"
 
 type NavMainProps = {
     items: {
@@ -20,6 +22,7 @@ type NavMainProps = {
 }
 
 export function NavMain({ items, setActiveView }: NavMainProps) {
+    const [quickCreateOpen, setQuickCreateOpen] = useState(false)
 
     const subject = encodeURIComponent("Check my MedJourney.ai results")
     const body = encodeURIComponent("Hi there,\n\nThis is might be interesting for our research!")
@@ -33,6 +36,7 @@ export function NavMain({ items, setActiveView }: NavMainProps) {
                         <SidebarMenuButton
                             tooltip="Quick Create"
                             className="min-w-8 bg-primary text-primary-foreground duration-200 ease-linear hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground cursor-pointer"
+                            onClick={() => setQuickCreateOpen(true)}
                         >
                             <PlusCircleIcon />
                             <span>Quick Create</span>
@@ -66,6 +70,7 @@ export function NavMain({ items, setActiveView }: NavMainProps) {
                     ))}
                 </SidebarMenu>
             </SidebarGroupContent>
+            <QuickCreateDialog open={quickCreateOpen} onOpenChange={setQuickCreateOpen} />
         </SidebarGroup>
     )
 }
