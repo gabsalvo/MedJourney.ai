@@ -18,7 +18,7 @@ export async function POST(req: Request) {
         }
 
         // Register user using Supabase Auth
-        const { data, error } = await supabase.auth.signUp({
+        const { error } = await supabase.auth.signUp({
             email,
             password,
         });
@@ -34,6 +34,7 @@ export async function POST(req: Request) {
             },
             { status: 201 }
         );
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
