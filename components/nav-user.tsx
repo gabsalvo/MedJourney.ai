@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import { signOut } from "next-auth/react"
 import { createClient } from "@supabase/supabase-js"
 
 import {
@@ -23,8 +22,11 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar"
-
+import {
+    SidebarMenu,
+    SidebarMenuButton,
+    SidebarMenuItem,
+} from "@/components/ui/sidebar"
 import { AccountDialog } from "@/components/account-dialog"
 
 // Initialize Supabase client
@@ -36,34 +38,42 @@ const supabase = createClient(
 export function NavUser() {
     const router = useRouter()
     const [dialogOpen, setDialogOpen] = useState(false)
-    const [dialogTab, setDialogTab] = useState<"account" | "billing" | "settings">("account")
-    const [user, setUser] = useState<{ name: string; email: string; avatar?: string } | null>(null)
+    const [dialogTab, setDialogTab] = useState<"account" | "billing" | "settings">(
+        "account"
+    )
+    const [user, setUser] = useState<{
+        name: string
+        email: string
+        avatar?: string
+    } | null>(null)
     const [loading, setLoading] = useState(true)
 
-    // ✅ Fetch authenticated user with proper session handling
+    // Fetch authenticated user with Supabase
     useEffect(() => {
         async function fetchUser() {
             try {
-                const { data: session, error: sessionError } = await supabase.auth.getSession()
+                // 1) Check session
+                const { data: sessionData, error: sessionError } =
+                    await supabase.auth.getSession()
 
-                if (sessionError || !session?.session) {
+                if (sessionError || !sessionData?.session) {
                     console.warn("No active session, user is logged out.")
                     setLoading(false)
                     return
                 }
 
-                const { data, error } = await supabase.auth.getUser()
-
-                if (error || !data?.user) {
+                // 2) Get user
+                const { data: userData, error } = await supabase.auth.getUser()
+                if (error || !userData?.user) {
                     console.error("Error fetching user:", error)
                     setLoading(false)
                     return
                 }
 
                 setUser({
-                    name: data.user.email?.split("@")[0] || "User",
-                    email: data.user.email || "No email",
-                    avatar: data.user.user_metadata?.avatar_url || "", // Add avatar if available
+                    name: userData.user.email?.split("@")[0] || "User",
+                    email: userData.user.email || "No email",
+                    avatar: userData.user.user_metadata?.avatar_url || "",
                 })
             } catch (error) {
                 console.error("Error retrieving user:", error)
@@ -77,8 +87,10 @@ export function NavUser() {
 
     async function handleLogout() {
         try {
-            await supabase.auth.signOut()
-            await signOut({ redirect: false })
+            const { error } = await supabase.auth.signOut()
+            if (error) {
+                console.error("Logout failed:", error)
+            }
             router.push("/")
         } catch (error) {
             console.error("Logout failed:", error)
@@ -88,7 +100,12 @@ export function NavUser() {
     return (
         <>
             {/* Account Dialog */}
-            <AccountDialog open={dialogOpen} setOpen={setDialogOpen} initialTab={dialogTab} handleLogout={handleLogout} />
+            <AccountDialog
+                open={dialogOpen}
+                setOpen={setDialogOpen}
+                initialTab={dialogTab}
+                handleLogout={handleLogout}
+            />
 
             <SidebarMenu>
                 <SidebarMenuItem>
@@ -105,16 +122,17 @@ export function NavUser() {
                                     )}
                                 </Avatar>
                                 <div className="grid flex-1 text-left text-sm leading-tight">
-                                    <span className="truncate font-medium">
-                                        {loading ? "Loading..." : user?.name || "Guest"}
-                                    </span>
+                  <span className="truncate font-medium">
+                    {loading ? "Loading..." : user?.name || "Guest"}
+                  </span>
                                     <span className="truncate text-xs text-muted-foreground">
-                                        {loading ? "Loading..." : user?.email || "Not logged in"}
-                                    </span>
+                    {loading ? "Loading..." : user?.email || "Not logged in"}
+                  </span>
                                 </div>
                                 <MoreVerticalIcon className="ml-auto size-4" />
                             </SidebarMenuButton>
                         </DropdownMenuTrigger>
+
                         <DropdownMenuContent
                             className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
                             align="end"
@@ -132,16 +150,17 @@ export function NavUser() {
                                         )}
                                     </Avatar>
                                     <div className="grid flex-1 text-left text-sm leading-tight">
-                                        <span className="truncate font-medium">
-                                            {loading ? "Loading..." : user?.name || "Guest"}
-                                        </span>
+                    <span className="truncate font-medium">
+                      {loading ? "Loading..." : user?.name || "Guest"}
+                    </span>
                                         <span className="truncate text-xs text-muted-foreground">
-                                            {loading ? "Loading..." : user?.email || "Not logged in"}
-                                        </span>
+                      {loading ? "Loading..." : user?.email || "Not logged in"}
+                    </span>
                                     </div>
                                 </div>
                             </DropdownMenuLabel>
                             <DropdownMenuSeparator />
+
                             <DropdownMenuGroup>
                                 <DropdownMenuItem
                                     className="cursor-pointer"
@@ -174,8 +193,12 @@ export function NavUser() {
                                     Settings
                                 </DropdownMenuItem>
                             </DropdownMenuGroup>
+
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem className="cursor-pointer text-red-500" onClick={handleLogout}>
+                            <DropdownMenuItem
+                                className="cursor-pointer text-red-500"
+                                onClick={handleLogout}
+                            >
                                 <LogOutIcon />
                                 Log out
                             </DropdownMenuItem>

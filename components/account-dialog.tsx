@@ -29,7 +29,13 @@ export function AccountDialog({
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            <DialogContent className="max-w-2xl p-0 flex h-[400px]">
+            <DialogContent className="w-full
+    p-0
+    flex
+    h-[500px]
+    sm:max-w-xl    /* su schermi >= 640px */
+    md:max-w-3xl   /* su schermi >= 768px */
+    lg:max-w-4xl   /* su schermi >= 1024px */">
                 {/* ✅ Add DialogTitle */}
                 <DialogTitle className="sr-only">Account Settings</DialogTitle>
 

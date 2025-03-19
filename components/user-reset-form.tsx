@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { createClient } from "@supabase/supabase-js"
+
 import { cn } from "@/lib/utils"
 import { Icons } from "@/components/icons"
 import { Button } from "@/components/ui/button"
@@ -14,7 +15,10 @@ const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 )
 
-export function UserResetForm({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+export function UserResetForm({
+                                  className,
+                                  ...props
+                              }: React.HTMLAttributes<HTMLDivElement>) {
     const [isLoading, setIsLoading] = React.useState<boolean>(false)
     const [email, setEmail] = React.useState<string>("")
     const [message, setMessage] = React.useState<string>("")
@@ -26,7 +30,7 @@ export function UserResetForm({ className, ...props }: React.HTMLAttributes<HTML
         setErrorMessage("")
         setIsLoading(true)
 
-        // 🔹 Send Password Reset Email via Supabase
+        // Send Password Reset Email via Supabase
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
             redirectTo: `${window.location.origin}/reset-password`,
         })
@@ -62,6 +66,7 @@ export function UserResetForm({ className, ...props }: React.HTMLAttributes<HTML
                             className="cursor-text"
                         />
                     </div>
+
                     {/* Reset Button */}
                     <Button
                         disabled={isLoading}
@@ -73,6 +78,7 @@ export function UserResetForm({ className, ...props }: React.HTMLAttributes<HTML
                             "Reset Password"
                         )}
                     </Button>
+
                     {/* Success & Error Messages */}
                     {message && <p className="text-green-500 text-sm">{message}</p>}
                     {errorMessage && <p className="text-red-500 text-sm">{errorMessage}</p>}

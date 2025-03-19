@@ -1,14 +1,19 @@
 "use client"
 
-import * as React from "react"
-import { signIn } from "next-auth/react"
+import React from "react"
 import { useRouter } from "next/navigation"
+import { createClient } from "@supabase/supabase-js"
 
 import { cn } from "@/lib/utils"
 import { Icons } from "@/components/icons"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+
+const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
 
 type UserLogFormProps = React.HTMLAttributes<HTMLDivElement>
 
@@ -24,17 +29,19 @@ export function UserLogForm({ className, ...props }: UserLogFormProps) {
         setErrorMessage("")
         setIsLoading(true)
 
-        // 🔐 Log in via NextAuth
-        const result = await signIn("credentials", {
-            redirect: false,
+        // Log in with Supabase
+        const { data, error } = await supabase.auth.signInWithPassword({
             email,
             password,
         })
 
-        if (result?.error) {
-            setErrorMessage(result.error)
+        if (error) {
+            setErrorMessage(error.message)
             setIsLoading(false)
         } else {
+            // data.session contains the session
+            // data.user has the user
+            setIsLoading(false)
             router.push("/dashboard")
         }
     }
@@ -89,8 +96,15 @@ export function UserLogForm({ className, ...props }: UserLogFormProps) {
                         )}
                         Log In
                     </Button>
-                    <a href="/reset" className="text-xs mt-2 text-zinc-600 font-semibold hover:text-zinc-800">Forgot your Password?</a>
-                    {errorMessage && <p className="text-red-500 text-sm">{errorMessage}</p>}
+                    <a
+                        href="/reset"
+                        className="text-xs mt-2 text-zinc-600 font-semibold hover:text-zinc-800"
+                    >
+                        Forgot your Password?
+                    </a>
+                    {errorMessage && (
+                        <p className="text-red-500 text-sm">{errorMessage}</p>
+                    )}
                 </div>
             </form>
         </div>

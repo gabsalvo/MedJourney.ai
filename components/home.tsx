@@ -1,17 +1,37 @@
 "use client"
 
-import { useSession } from "next-auth/react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
+import { createClient } from "@supabase/supabase-js"
+
+// Create a Supabase client (if you don't already have a shared client)
+const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
 
 export default function HomeContent() {
-    const { data: session } = useSession()
     const router = useRouter()
+    const [isLoggedIn, setIsLoggedIn] = useState(false)
+
+    // Check Supabase session on mount
+    useEffect(() => {
+        async function checkSession() {
+            const { data } = await supabase.auth.getSession()
+            if (data.session) {
+                setIsLoggedIn(true)
+            } else {
+                setIsLoggedIn(false)
+            }
+        }
+        checkSession()
+    }, [])
 
     // Handle "Get Started" click
     const handleGetStarted = (e: React.MouseEvent) => {
         e.preventDefault()
-        if (session) {
+        if (isLoggedIn) {
             router.push("/dashboard") // Redirect logged-in users to the dashboard
         } else {
             router.push("/authentication") // Redirect guests to authentication
@@ -69,11 +89,17 @@ export default function HomeContent() {
                 </div>
             </main>
             <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-                <a className="flex items-center gap-2 hover:underline hover:underline-offset-4" href="https://developers.google.com/machine-learning/clustering/overview">
+                <a
+                    className="flex items-center gap-2 hover:underline hover:underline-offset-4"
+                    href="https://developers.google.com/machine-learning/clustering/overview"
+                >
                     <Image aria-hidden src="/file.svg" alt="File icon" width={16} height={16} />
                     Learn
                 </a>
-                <a className="flex items-center gap-2 hover:underline hover:underline-offset-4" href="https://developers.google.com/machine-learning/clustering/clustering-algorithms">
+                <a
+                    className="flex items-center gap-2 hover:underline hover:underline-offset-4"
+                    href="https://developers.google.com/machine-learning/clustering/clustering-algorithms"
+                >
                     <Image aria-hidden src="/window.svg" alt="Window icon" width={16} height={16} />
                     Examples
                 </a>
