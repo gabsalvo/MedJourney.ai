@@ -7,7 +7,6 @@ import {
     FolderIcon,
     HelpCircleIcon,
     LayoutDashboardIcon,
-    SettingsIcon,
     SparklesIcon,
     ActivityIcon,
 } from "lucide-react";
