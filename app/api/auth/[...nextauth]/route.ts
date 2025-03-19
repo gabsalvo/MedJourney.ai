@@ -1,4 +1,4 @@
-import NextAuth, { NextAuthOptions } from "next-auth";
+import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import { createClient } from "@supabase/supabase-js";
@@ -9,15 +9,13 @@ const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
-export const authOptions: NextAuthOptions = {
+const handler = NextAuth({
     providers: [
-        // ✅ Google OAuth
         GoogleProvider({
             clientId: process.env.GOOGLE_CLIENT_ID!,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
         }),
 
-        // ✅ Email/Password using Supabase Auth
         CredentialsProvider({
             name: "Email",
             credentials: {
@@ -29,7 +27,7 @@ export const authOptions: NextAuthOptions = {
 
                 const { email, password } = credentials;
 
-                // 🔑 Use Supabase Auth to log in
+                // 🔑 Authenticate using Supabase Auth
                 const { data, error } = await supabase.auth.signInWithPassword({
                     email,
                     password,
@@ -48,7 +46,7 @@ export const authOptions: NextAuthOptions = {
     ],
     secret: process.env.NEXTAUTH_SECRET,
     session: {
-        strategy: "jwt" as const,
+        strategy: "jwt",
     },
     callbacks: {
         async session({ session, token }) {
@@ -59,7 +57,7 @@ export const authOptions: NextAuthOptions = {
     pages: {
         signIn: "/login",
     },
-};
+});
 
-const handler = NextAuth(authOptions);
+// ✅ Correctly export API route handlers
 export { handler as GET, handler as POST };
