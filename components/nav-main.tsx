@@ -20,6 +20,11 @@ type NavMainProps = {
 }
 
 export function NavMain({ items, setActiveView }: NavMainProps) {
+
+    const subject = encodeURIComponent("Check my MedJourney.ai results")
+    const body = encodeURIComponent("Hi there,\n\nThis is might be interesting for our research!")
+    const mailtoUrl = `mailto:someone@example.com?subject=${subject}&body=${body}`
+
     return (
         <SidebarGroup>
             <SidebarGroupContent className="flex flex-col gap-2">
@@ -34,11 +39,15 @@ export function NavMain({ items, setActiveView }: NavMainProps) {
                         </SidebarMenuButton>
                         <Button
                             size="icon"
-                            className="h-9 w-9 shrink-0 group-data-[collapsible=icon]:opacity-0 cursor-pointer"
+                            className="h-9 w-9"
                             variant="outline"
+                            asChild
                         >
-                            <MailIcon />
-                            <span className="sr-only">Inbox</span>
+                            {/* asChild means the Button's styles will wrap the anchor */}
+                            <a href={mailtoUrl}>
+                                <MailIcon />
+                                <span className="sr-only">Inbox</span>
+                            </a>
                         </Button>
                     </SidebarMenuItem>
                 </SidebarMenu>
