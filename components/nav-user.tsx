@@ -1,5 +1,10 @@
 "use client"
 
+
+import { useRouter } from "next/navigation"
+import { signOut } from "next-auth/react"
+import { createClient } from "@supabase/supabase-js"
+
 import {
     BellIcon,
     CreditCardIcon,
@@ -29,6 +34,13 @@ import {
     useSidebar,
 } from "@/components/ui/sidebar"
 
+
+
+const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
+
 export function NavUser({
                             user,
                         }: {
@@ -39,6 +51,22 @@ export function NavUser({
     }
 }) {
     const { isMobile } = useSidebar()
+    const router = useRouter()
+
+    async function handleLogout() {
+        try {
+            // 🔹 Sign out from Supabase
+            await supabase.auth.signOut()
+
+            // 🔹 Sign out from NextAuth
+            await signOut({ redirect: false })
+
+            // 🔹 Redirect to home
+            router.push("/")
+        } catch (error) {
+            console.error("Logout failed:", error)
+        }
+    }
 
     return (
         <SidebarMenu>
@@ -47,7 +75,7 @@ export function NavUser({
                     <DropdownMenuTrigger asChild>
                         <SidebarMenuButton
                             size="lg"
-                            className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                            className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground cursor-pointer"
                         >
                             <Avatar className="h-8 w-8 rounded-lg grayscale">
                                 <AvatarImage src={user.avatar} alt={user.name} />
@@ -63,12 +91,12 @@ export function NavUser({
                         </SidebarMenuButton>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent
-                        className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+                        className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg cursor-pointer"
                         side={isMobile ? "bottom" : "right"}
                         align="end"
                         sideOffset={4}
                     >
-                        <DropdownMenuLabel className="p-0 font-normal">
+                        <DropdownMenuLabel className="p-0 font-normal cursor-pointer">
                             <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                                 <Avatar className="h-8 w-8 rounded-lg">
                                     <AvatarImage src={user.avatar} alt={user.name} />
@@ -84,21 +112,21 @@ export function NavUser({
                         </DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuGroup>
-                            <DropdownMenuItem>
-                                <UserCircleIcon />
+                            <DropdownMenuItem className="cursor-pointer">
+                                <UserCircleIcon/>
                                 Account
                             </DropdownMenuItem>
-                            <DropdownMenuItem>
+                            <DropdownMenuItem className="cursor-pointer" >
                                 <CreditCardIcon />
                                 Billing
                             </DropdownMenuItem>
-                            <DropdownMenuItem>
+                            <DropdownMenuItem className="cursor-pointer" >
                                 <BellIcon />
                                 Notifications
                             </DropdownMenuItem>
                         </DropdownMenuGroup>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>
+                        <DropdownMenuItem className="cursor-pointer" onClick={handleLogout}>
                             <LogOutIcon />
                             Log out
                         </DropdownMenuItem>

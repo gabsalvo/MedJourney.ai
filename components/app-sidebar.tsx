@@ -2,21 +2,17 @@
 
 import * as React from "react"
 import {
-    ArrowUpCircleIcon,
-    BarChartIcon,
     CameraIcon,
     ClipboardListIcon,
     DatabaseIcon,
     FileCodeIcon,
-    FileIcon,
     FileTextIcon,
     FolderIcon,
     HelpCircleIcon,
     LayoutDashboardIcon,
-    ListIcon,
-    SearchIcon,
     SettingsIcon,
-    UsersIcon,
+    SparklesIcon,
+    ActivityIcon
 } from "lucide-react"
 
 import { NavDocuments } from "@/components/nav-documents"
@@ -46,24 +42,14 @@ const data = {
             icon: LayoutDashboardIcon,
         },
         {
-            title: "Lifecycle",
-            url: "#",
-            icon: ListIcon,
-        },
-        {
-            title: "Analytics",
-            url: "#",
-            icon: BarChartIcon,
-        },
-        {
             title: "Projects",
             url: "#",
             icon: FolderIcon,
         },
         {
-            title: "Team",
+            title: "Ask Med.ai",
             url: "#",
-            icon: UsersIcon,
+            icon: SparklesIcon,
         },
     ],
     navClouds: [
@@ -125,11 +111,6 @@ const data = {
             url: "#",
             icon: HelpCircleIcon,
         },
-        {
-            title: "Search",
-            url: "#",
-            icon: SearchIcon,
-        },
     ],
     documents: [
         {
@@ -141,11 +122,6 @@ const data = {
             name: "Reports",
             url: "#",
             icon: ClipboardListIcon,
-        },
-        {
-            name: "Word Assistant",
-            url: "#",
-            icon: FileIcon,
         },
     ],
 }
@@ -161,8 +137,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                             className="data-[slot=sidebar-menu-button]:!p-1.5"
                         >
                             <a href="#">
-                                <ArrowUpCircleIcon className="h-5 w-5" />
-                                <span className="text-base font-semibold">Acme Inc.</span>
+                                <ActivityIcon className="h-5 w-5 text-blue-500" />
+                                <span className="text-base font-semibold">Med<span className="text-blue-500">Journey</span>.ai</span>
+
                             </a>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
