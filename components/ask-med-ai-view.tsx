@@ -10,8 +10,8 @@ import { Input } from "@/components/ui/input"
 
 const mockMessages = [
     { role: "assistant", content: "Hello! How can I help you?" },
-    { role: "user", content: "I'm exploring a pinned input chat layout." },
-    { role: "assistant", content: "Sure! Let's do it with shadcn/ui ScrollArea." },
+    { role: "user", content: "How many clusters should I use?" },
+    { role: "assistant", content: "I'd say K=5" },
 ]
 
 export function AskMedAIView() {
