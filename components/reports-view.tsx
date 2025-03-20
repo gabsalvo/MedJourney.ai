@@ -1,8 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { ClipboardListIcon, FileTextIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { ClipboardListIcon } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 // Mock Data for Reports
@@ -20,10 +19,6 @@ export function ReportsView() {
                     <ClipboardListIcon className="h-5 w-5 text-blue-500" />
                     Reports
                 </h2>
-                <Button className="flex gap-2">
-                    <FileTextIcon className="h-5 w-5" />
-                    Generate New Report
-                </Button>
             </div>
 
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">

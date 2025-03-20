@@ -77,7 +77,7 @@ export function QuickCreateDialog({ open, onOpenChange }: QuickCreateDialogProps
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-xl md:max-w-2xl lg:max-w-3xl">
                 <DialogHeader>
-                    <DialogTitle>Quick Create</DialogTitle>
+                    <DialogTitle>Get New Insights on your data</DialogTitle>
                     <DialogDescription>
                         Upload your Files (CSV, Excel o TXT) dragging them here or using the Upload Button.
                     </DialogDescription>

@@ -39,7 +39,7 @@ export function NavMain({ items, setActiveView }: NavMainProps) {
                             onClick={() => setQuickCreateOpen(true)}
                         >
                             <PlusCircleIcon />
-                            <span>Quick Create</span>
+                            <span>Quick Clustering</span>
                         </SidebarMenuButton>
                         <Button
                             size="icon"

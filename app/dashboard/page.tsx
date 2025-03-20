@@ -3,10 +3,7 @@
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { createClient } from "@supabase/supabase-js"
-
 import { AppSidebar } from "@/components/app-sidebar"
-import { ChartAreaInteractive } from "@/components/chart-area-interactive"
-import { DataTable } from "@/components/data-table"
 import { ProjectsView } from "@/components/projects-view"
 import { AskMedAIView } from "@/components/ask-med-ai-view"
 import { DataLibraryView } from "@/components/data-library-view"
@@ -14,9 +11,7 @@ import { ReportsView } from "@/components/reports-view"
 import { SettingsView } from "@/components/settings-view"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import { SiteHeader } from "@/components/site-header"
-import { SectionCards } from "@/components/section-cards"
 import { Skeleton } from "@/components/ui/skeleton"
-import data from "./data.json"
 
 const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -74,9 +69,7 @@ export default function Page() {
                 <div className="flex flex-1 flex-col p-6">
                     {activeView === "dashboard" && (
                         <>
-                            <SectionCards />
-                            <ChartAreaInteractive />
-                            <DataTable data={data} />
+
                         </>
                     )}
                     {activeView === "projects" && <ProjectsView />}
