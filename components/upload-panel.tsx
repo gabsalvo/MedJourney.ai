@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useRef, DragEvent } from "react";
-import { UploadCloudIcon } from "lucide-react";
+import React, { useState, useRef, DragEvent } from "react";
+import {CloudUploadIcon, UploadCloudIcon} from "lucide-react";
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
@@ -70,7 +70,9 @@ export function UploadPanel() {
     return (
         <Card className="h-[350px] flex flex-col justify-between mr-5">
             <CardHeader>
-                <CardTitle>📤 Upload Data</CardTitle>
+                <CardTitle>
+                    <CloudUploadIcon className="mr-2 h-5 w-5" /> Upload Data
+                </CardTitle>
             </CardHeader>
             <CardContent className="flex flex-col items-center justify-center gap-4 h-full">
                 {/* Drag & Drop Area */}

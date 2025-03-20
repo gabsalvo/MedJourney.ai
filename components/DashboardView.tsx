@@ -16,8 +16,8 @@ export function Dashboard() {
     return (
         <div className="flex flex-col h-screen overflow-y-hidden">
             {/* Top Fixed Panel (non-resizable) */}
-            <div className="md:h-24 w-full">
-                <WelcomePanel />
+            <div className="h-auto w-full mb-5">
+                <WelcomePanel/>
             </div>
 
             {/* Bottom: Full flex space. Split horizontally between left & right. */}
