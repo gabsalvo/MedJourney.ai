@@ -1,27 +1,63 @@
 "use client";
 
-import { ResizablePanelGroup, ResizablePanel } from "@/components/ui/resizable";
+import {
+    ResizablePanelGroup,
+    ResizablePanel,
+    ResizableHandle,
+} from "@/components/ui/resizable";
+
+import { WelcomePanel } from "@/components/welcome-panel";
 import { UploadPanel } from "@/components/upload-panel";
-import { WelcomePanel } from "@/components//welcome-panel";
-import { ResultsPanel } from "@/components//results-panel";
+import { SettingsPanel } from "@/components/settings-panel";
+import { ResultsPanel } from "@/components/results-panel";
+import { ExplainableAIPanel } from "@/components/explainable-ai-view";
 
-export function DashboardView() {
+export function Dashboard() {
     return (
-        <ResizablePanelGroup direction="horizontal" className="h-full w-full p-4">
-            {/* Left Panel - Upload & Quick Actions */}
-            <ResizablePanel defaultSize={25} minSize={20} maxSize={40} className="p-4">
-                <UploadPanel />
-            </ResizablePanel>
-
-            {/* Center Panel - Welcome Section */}
-            <ResizablePanel defaultSize={40} minSize={30} maxSize={50} className="p-4">
+        <div className="flex flex-col h-screen overflow-y-hidden">
+            {/* Top Fixed Panel (non-resizable) */}
+            <div className="md:h-24 w-full">
                 <WelcomePanel />
-            </ResizablePanel>
+            </div>
 
-            {/* Right Panel - AI Clustering Results */}
-            <ResizablePanel defaultSize={35} minSize={25} maxSize={50} className="p-4">
-                <ResultsPanel />
-            </ResizablePanel>
-        </ResizablePanelGroup>
+            {/* Bottom: Full flex space. Split horizontally between left & right. */}
+            <ResizablePanelGroup className="flex-grow" direction="horizontal">
+                {/* Left side: fixed vertical split (non-resizable vertically) */}
+                <ResizablePanel
+                    defaultSize={40}
+                    minSize={20}
+                    maxSize={80}
+                    className="border-r border-gray-300"
+                >
+                    <div className="flex flex-col h-[750px]">
+                        <div className="flex-1">
+                            <UploadPanel />
+                        </div>
+                        <div className="flex-1">
+                            <SettingsPanel />
+                        </div>
+                    </div>
+                </ResizablePanel>
+
+                <ResizableHandle />
+
+                {/* Right side: split vertically (Results & Explainable AI) */}
+                <ResizablePanel defaultSize={60} minSize={20}>
+                    <ResizablePanelGroup direction="vertical" className="h-500">
+                        {/* Top: Results */}
+                        <ResizablePanel defaultSize={30} minSize={20} className="border-b border-gray-300">
+                            <ResultsPanel />
+                        </ResizablePanel>
+
+                        <ResizableHandle />
+
+                        {/* Bottom: Explainable AI */}
+                        <ResizablePanel defaultSize={10} minSize={10}>
+                            <ExplainableAIPanel />
+                        </ResizablePanel>
+                    </ResizablePanelGroup>
+                </ResizablePanel>
+            </ResizablePanelGroup>
+        </div>
     );
 }

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { createClient } from "@supabase/supabase-js"
-import { DashboardView} from "@/components/DashboardView";
+import { Dashboard } from "@/components/DashboardView";
 import { AppSidebar } from "@/components/app-sidebar"
 import { ProjectsView } from "@/components/projects-view"
 import { AskMedAIView } from "@/components/ask-med-ai-view"
@@ -70,7 +70,7 @@ export default function Page() {
                 <div className="flex flex-1 flex-col p-6">
                     {activeView === "dashboard" && (
                         <>
-                            <DashboardView />
+                            <Dashboard />
                         </>
                     )}
                     {activeView === "projects" && <ProjectsView />}

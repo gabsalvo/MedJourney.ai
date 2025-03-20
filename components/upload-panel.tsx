@@ -1,41 +1,124 @@
 "use client";
 
-import { useState } from "react";
-import { UploadCloudIcon, PlayIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useState, useRef, DragEvent } from "react";
+import { UploadCloudIcon } from "lucide-react";
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 export function UploadPanel() {
-    const [setFiles] = useState<File[]>([]);
+    const [files, setFiles] = useState<File[]>([]);
+    const [dragActive, setDragActive] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
-    function handleFileUpload(event: React.ChangeEvent<HTMLInputElement>) {
-        if (event.target.files) {
-            // @ts-expect-error just show
-            setFiles(Array.from(event.target.files));
+    // Handle drop event and filter files by accepted extensions.
+    function handleDrop(e: DragEvent<HTMLDivElement>) {
+        e.preventDefault();
+        e.stopPropagation();
+        setDragActive(false);
+
+        const droppedFiles = Array.from(e.dataTransfer.files);
+        const acceptedExtensions = [".csv", ".xls", ".xlsx", ".txt"];
+        const filteredFiles = droppedFiles.filter((file) =>
+            acceptedExtensions.some((ext) => file.name.toLowerCase().endsWith(ext))
+        );
+
+        if (filteredFiles.length) {
+            console.log("Valid files dropped:", filteredFiles);
+            setFiles(filteredFiles);
+        } else {
+            console.log("No valid files dropped!");
         }
     }
 
+    // Update drag state.
+    function handleDragOver(e: DragEvent<HTMLDivElement>) {
+        e.preventDefault();
+        e.stopPropagation();
+        setDragActive(true);
+    }
+
+    // Reset drag state when cursor leaves.
+    function handleDragLeave(e: DragEvent<HTMLDivElement>) {
+        e.preventDefault();
+        e.stopPropagation();
+        setDragActive(false);
+    }
+
+    // Handle file selection via the classic file input.
+    function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
+        const selectedFiles = e.target.files ? Array.from(e.target.files) : [];
+        const acceptedExtensions = [".csv", ".xls", ".xlsx", ".txt"];
+        const filteredFiles = selectedFiles.filter((file) =>
+            acceptedExtensions.some((ext) => file.name.toLowerCase().endsWith(ext))
+        );
+
+        if (filteredFiles.length) {
+            console.log("Valid files selected:", filteredFiles);
+            setFiles(filteredFiles);
+        } else {
+            console.log("No valid files selected!");
+        }
+        // Optional: reset the file input.
+        e.target.value = "";
+    }
+
+    // Trigger file input click.
+    function triggerFileSelect() {
+        fileInputRef.current?.click();
+    }
+
     return (
-        <Card className="h-full flex flex-col justify-between">
+        <Card className="h-[350px] flex flex-col justify-between mr-5">
             <CardHeader>
                 <CardTitle>📤 Upload Data</CardTitle>
             </CardHeader>
             <CardContent className="flex flex-col items-center justify-center gap-4 h-full">
-                <input
-                    type="file"
-                    multiple
-                    accept=".csv,.xls,.xlsx,.txt"
-                    hidden
-                    id="file-upload"
-                    onChange={handleFileUpload}
-                />
-                <label htmlFor="file-upload" className="cursor-pointer">
-                    <UploadCloudIcon className="h-12 w-12 text-gray-500" />
-                    <p className="text-sm text-muted-foreground">Drag & Drop or Click to Upload</p>
-                </label>
-                <Button className="w-full flex gap-2">
-                    <PlayIcon className="w-5 h-5" /> Start New Analysis
+                {/* Drag & Drop Area */}
+                <div
+                    className={`w-full p-6 border-2 border-dashed rounded-md transition-colors cursor-pointer ${
+                        dragActive ? "border-blue-500 bg-blue-50" : "border-gray-300"
+                    }`}
+                    onDragOver={handleDragOver}
+                    onDragEnter={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                    onDrop={handleDrop}
+                    onClick={triggerFileSelect}
+                >
+                    <UploadCloudIcon className="h-12 w-12 text-gray-500 mx-auto" />
+                    <p className="text-center text-sm text-muted-foreground mt-2">
+                        Drag & Drop your file here.
+                    </p>
+                    <p className="text-center text-xs text-muted-foreground">
+                        (Accepted formats: CSV, Excel, or TXT)
+                    </p>
+                    <input
+                        type="file"
+                        multiple
+                        accept=".csv,.xls,.xlsx,.txt"
+                        className="hidden"
+                        ref={fileInputRef}
+                        onChange={handleFileUpload}
+                    />
+                </div>
+
+                {/* Small Button for file selection */}
+                <Button size="sm" onClick={triggerFileSelect} className="cursor-pointer">
+                    Select a file
                 </Button>
+
+                {/* Display selected files, if any */}
+                {files.length > 0 && (
+                    <div className="w-full">
+                        <p className="text-sm font-medium">Selected File:</p>
+                        <ul className="list-disc ml-6">
+                            {files.map((file, index) => (
+                                <li key={index} className="text-sm">
+                                    {file.name}
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
             </CardContent>
         </Card>
     );

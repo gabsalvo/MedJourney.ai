@@ -6,7 +6,7 @@ import {
     DatabaseIcon,
     FolderIcon,
     HelpCircleIcon,
-    LayoutDashboardIcon,
+    BrainCircuitIcon,
     SparklesIcon,
     ActivityIcon,
 } from "lucide-react";
@@ -38,9 +38,9 @@ const data = {
     },
     navMain: [
         {
-            title: "Dashboard",
+            title: "Analyze",
             view: "dashboard" as const,
-            icon: LayoutDashboardIcon,
+            icon: BrainCircuitIcon,
         },
         {
             title: "Projects",

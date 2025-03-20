@@ -17,6 +17,7 @@ interface QuickCreateDialogProps {
 
 export function QuickCreateDialog({ open, onOpenChange }: QuickCreateDialogProps) {
     const [dragActive, setDragActive] = useState(false)
+    const [files, setFiles] = useState<File[]>([])
 
     // Gestisce il drop dei file
     function handleDrop(e: DragEvent<HTMLDivElement>) {
@@ -24,17 +25,17 @@ export function QuickCreateDialog({ open, onOpenChange }: QuickCreateDialogProps
         e.stopPropagation()
         setDragActive(false)
 
-        const files = Array.from(e.dataTransfer.files)
+        const filesArray = Array.from(e.dataTransfer.files)
         // Filtra i file che non siano CSV, Excel (xls/xlsx) o txt
         const acceptedExtensions = [".csv", ".xls", ".xlsx", ".txt"]
-        const filteredFiles = files.filter(file => {
+        const filteredFiles = filesArray.filter(file => {
             const fileName = file.name.toLowerCase()
             return acceptedExtensions.some(ext => fileName.endsWith(ext))
         })
 
         if (filteredFiles.length) {
-            // Fai qualcosa con i file caricati
             console.log("File validi caricati:", filteredFiles)
+            setFiles(filteredFiles)
         } else {
             console.log("Nessun file valido trovato!")
         }
@@ -56,16 +57,17 @@ export function QuickCreateDialog({ open, onOpenChange }: QuickCreateDialogProps
 
     // Caricamento classico via input file
     function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
-        const files = e.target.files ? Array.from(e.target.files) : []
+        const filesArray = e.target.files ? Array.from(e.target.files) : []
         // Stessa logica di filtro
         const acceptedExtensions = [".csv", ".xls", ".xlsx", ".txt"]
-        const filteredFiles = files.filter(file => {
+        const filteredFiles = filesArray.filter(file => {
             const fileName = file.name.toLowerCase()
             return acceptedExtensions.some(ext => fileName.endsWith(ext))
         })
 
         if (filteredFiles.length) {
             console.log("File validi caricati via input:", filteredFiles)
+            setFiles(filteredFiles)
         } else {
             console.log("Nessun file valido via input!")
         }
@@ -86,9 +88,9 @@ export function QuickCreateDialog({ open, onOpenChange }: QuickCreateDialogProps
                 {/* Area Drag & Drop */}
                 <div
                     className={`
-            mt-4 p-6 border-2 border-dashed rounded-md transition-colors
-            ${dragActive ? "border-blue-500 bg-blue-50" : "border-gray-300"}
-          `}
+                        mt-4 p-6 border-2 border-dashed rounded-md transition-colors
+                        ${dragActive ? "border-blue-500 bg-blue-50" : "border-gray-300"}
+                    `}
                     onDragOver={handleDragOver}
                     onDragEnter={handleDragOver}
                     onDragLeave={handleDragLeave}
@@ -115,12 +117,25 @@ export function QuickCreateDialog({ open, onOpenChange }: QuickCreateDialogProps
                     </Button>
                 </div>
 
+                {/* Display selected files */}
+                {files.length > 0 && (
+                    <div className="mt-2">
+                        <p className="text-sm font-medium">Selected File:</p>
+                        <ul className="list-disc ml-6">
+                            {files.map((file, index) => (
+                                <li key={index} className="text-sm">{file.name}</li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
+
                 <div className="mt-6 flex justify-end gap-2">
                     <Button className="cursor-pointer" variant="outline" onClick={() => onOpenChange(false)}>
                         Cancel
                     </Button>
-                    {/* Esempio di pulsante “OK” o “Conferma” (dipende dalla tua logica) */}
-                    <Button className="cursor-pointer" onClick={() => onOpenChange(false)}>Confirm</Button>
+                    <Button className="cursor-pointer" onClick={() => onOpenChange(false)}>
+                        Confirm
+                    </Button>
                 </div>
             </DialogContent>
         </Dialog>
