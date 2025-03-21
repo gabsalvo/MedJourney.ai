@@ -14,7 +14,8 @@ import { ExplainableAIPanel } from "@/components/explainable-ai-view";
 
 export function Dashboard() {
     return (
-        <div className="flex flex-col h-[820px]">
+        <>
+        <div className="hidden md:flex flex-col h-[820px]">
             {/* Top Fixed Panel (non-resizable) */}
             <div className="h-auto w-full mb-5">
                 <TipsPanel/>
@@ -59,5 +60,22 @@ export function Dashboard() {
                 </ResizablePanel>
             </ResizablePanelGroup>
         </div>
+
+    <div className="flex md:hidden flex-col h-screen overflow-y-auto p-4 space-y-4">
+        {/* On mobile, omit TipsPanel */}
+        <div>
+            <UploadPanel />
+        </div>
+        <div>
+            <SettingsPanel />
+        </div>
+        <div>
+            <ResultsPanel />
+        </div>
+        <div>
+            <ExplainableAIPanel />
+        </div>
+    </div>
+</>
     );
 }
