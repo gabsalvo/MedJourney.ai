@@ -71,7 +71,7 @@ export function UploadPanel() {
         <Card className="h-[350px] flex flex-col justify-between mr-5">
             <CardHeader>
                 <CardTitle>
-                    <CloudUploadIcon className="mr-2 h-5 w-5" /> Upload Data
+                    <CloudUploadIcon className="mr-2 h-5 w-5 text-blue-700" /> Upload Data
                 </CardTitle>
             </CardHeader>
             <CardContent className="flex flex-col items-center justify-center gap-4 h-full">

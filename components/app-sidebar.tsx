@@ -9,6 +9,7 @@ import {
     BrainCircuitIcon,
     SparklesIcon,
     ActivityIcon,
+    CompassIcon
 } from "lucide-react";
 
 import { NavDocuments } from "@/components/nav-documents";
@@ -51,6 +52,11 @@ const data = {
             title: "Ask Med.ai",
             view: "askMedAI" as const,
             icon: SparklesIcon,
+        },
+        {
+            title: "Take A Tour",
+            view: "dashboard" as const,
+            icon: CompassIcon,
         },
     ],
     navSecondary: [

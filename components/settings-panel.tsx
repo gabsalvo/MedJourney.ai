@@ -115,7 +115,7 @@ export function SettingsPanel() {
         <Card className="h-[350px] flex flex-col justify-between mr-5 ">
             <CardHeader>
                 <CardTitle className="flex items-center">
-                    <SettingsIcon className="mr-2 h-5 w-5"/> Analysis Settings
+                    <SettingsIcon className="mr-2 h-5 w-5 text-blue-700"/> Analysis Settings
                 </CardTitle>
             </CardHeader>
             <CardContent className="flex flex-col gap-4 h-full">
@@ -137,14 +137,14 @@ export function SettingsPanel() {
                                     setAlgo(value as "kmeans" | "agglomerative" | "dbscan" | "auto")
                                 }
                             >
-                                <SelectTrigger id="algo-select" className="w-full">
+                                <SelectTrigger id="algo-select" className="w-full cursor-pointer">
                                     <SelectValue placeholder="Select an algorithm"/>
                                 </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="kmeans">K-Means</SelectItem>
-                                    <SelectItem value="agglomerative">Agglomerative</SelectItem>
-                                    <SelectItem value="dbscan">DBSCAN</SelectItem>
-                                    <SelectItem value="auto">Let AI choose for me</SelectItem>
+                                <SelectContent >
+                                    <SelectItem value="kmeans" className="cursor-pointer">K-Means</SelectItem>
+                                    <SelectItem value="agglomerative" className="cursor-pointer">Agglomerative</SelectItem>
+                                    <SelectItem value="dbscan" className="cursor-pointer">DBSCAN</SelectItem>
+                                    <SelectItem value="auto" className="cursor-pointer">Let AI choose for me</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
@@ -257,6 +257,7 @@ export function SettingsPanel() {
                             <div className="flex items-center gap-2">
                                 <Checkbox
                                     id="report"
+                                    className="cursor-pointer border-zinc-950"
                                 />
                                 <Label htmlFor="report" className="cursor-pointer text-sm font-medium">
                                     Generate a PDF Report
@@ -268,14 +269,14 @@ export function SettingsPanel() {
                     {/* Navigation Buttons */}
                     <div className="w-full flex justify-between mt-4">
                         {currentStep > 1 && (
-                            <Button variant="outline" onClick={handleBack}>
+                            <Button variant="outline" onClick={handleBack} className="cursor-pointer">
                                 Back
                             </Button>
                         )}
                         {currentStep < (algo === "auto" ? 2 : 3) ? (
-                            <Button onClick={handleNext}>Next</Button>
+                            <Button onClick={handleNext} className="cursor-pointer">Next</Button>
                         ) : (
-                            <Button onClick={startAnalysis}>Start Analysis</Button>
+                            <Button onClick={startAnalysis} className="cursor-pointer bg-blue-700 hover:bg-blue-500">Start Analysis</Button>
                         )}
                     </div>
                 </motion.div>

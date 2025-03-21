@@ -6,7 +6,7 @@ import {
     ResizableHandle,
 } from "@/components/ui/resizable";
 
-import { WelcomePanel } from "@/components/welcome-panel";
+import { TipsPanel } from "@/components/tips-panel";
 import { UploadPanel } from "@/components/upload-panel";
 import { SettingsPanel } from "@/components/settings-panel";
 import { ResultsPanel } from "@/components/results-panel";
@@ -17,7 +17,7 @@ export function Dashboard() {
         <div className="flex flex-col h-screen overflow-y-hidden">
             {/* Top Fixed Panel (non-resizable) */}
             <div className="h-auto w-full mb-5">
-                <WelcomePanel/>
+                <TipsPanel/>
             </div>
 
             {/* Bottom: Full flex space. Split horizontally between left & right. */}
