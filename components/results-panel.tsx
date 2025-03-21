@@ -1,19 +1,33 @@
 "use client";
 
-import { motion } from "framer-motion";
+import {BoxesIcon, ChartAreaIcon} from "lucide-react";
+import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
+import React from "react";
 
 export function ResultsPanel() {
     return (
-        <motion.div
-            className="flex flex-col h-full bg-gray-50 m-4 p-4 rounded-md shadow-sm"
-            initial={{ x: 10, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ duration: 0.3 }}
-        >
-            <h3 className="text-sm md:text-base font-semibold mb-2">Clustering Results</h3>
-            <div className="flex-1 border rounded-md bg-white flex items-center justify-center">
-                <p className="text-gray-400 text-sm">[Charts / Tables / Graphs go here]</p>
-            </div>
-        </motion.div>
+        <Card className="h-[450px] flex flex-col ml-5">
+            <CardHeader>
+                <CardTitle className="flex items-center">
+                    <BoxesIcon className="mr-2 h-5 w-5 text-blue-700" />
+                    Clustering Results
+                </CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-col justify-center items-center flex-grow">
+                {/* Inner card as the results container */}
+                <Card className="bg-zinc-50 rounded-md shadow-sm w-full h-[350px]">
+                    <CardContent>
+                        <div
+                            className="w-full justify-center items-center p-25"
+                        >
+                            <ChartAreaIcon className="h-12 w-12 text-gray-500 mx-auto" />
+                            <p className="text-center text-sm text-muted-foreground mt-2">
+                                Your Clustering Results will be displayed here
+                            </p>
+                        </div>
+                    </CardContent>
+                </Card>
+            </CardContent>
+        </Card>
     );
 }

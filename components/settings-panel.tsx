@@ -112,7 +112,7 @@ export function SettingsPanel() {
     };
 
     return (
-        <Card className="h-[350px] flex flex-col justify-between mr-5 ">
+        <Card className="h-[300px] flex flex-col justify-between mr-5 ">
             <CardHeader>
                 <CardTitle className="flex items-center">
                     <SettingsIcon className="mr-2 h-5 w-5 text-blue-700"/> Analysis Settings
@@ -128,7 +128,7 @@ export function SettingsPanel() {
                     {/* Step 1: Choose algorithm using a Select combobox */}
                     {currentStep === 1 && (
                         <div className="w-full">
-                            <Label htmlFor="algo-select" className="mb-2 text-sm">
+                            <Label htmlFor="algo-select" className="mb-2 text-sm font-bold">
                                 Choose a clustering algorithm:
                             </Label>
                             <Select
@@ -186,7 +186,7 @@ export function SettingsPanel() {
                                 </div>
                             )}
                             {algo === "agglomerative" && (
-                                <div className="w-full flex flex-col gap-4">
+                                <div className="w-full flex flex-col gap-2">
                                     <Label className="text-xs md:text-sm font-medium">Linkage Method:</Label>
                                     <Select
                                         value={linkage}

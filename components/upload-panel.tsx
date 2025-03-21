@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, DragEvent } from "react";
-import {CloudUploadIcon, UploadCloudIcon} from "lucide-react";
+import {CloudUploadIcon, FileUpIcon} from "lucide-react";
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
@@ -70,8 +70,9 @@ export function UploadPanel() {
     return (
         <Card className="h-[350px] flex flex-col justify-between mr-5">
             <CardHeader>
-                <CardTitle>
-                    <CloudUploadIcon className="mr-2 h-5 w-5 text-blue-700" /> Upload Data
+                <CardTitle className="flex items-center">
+                    <CloudUploadIcon className="mr-2 h-5 w-5 text-blue-700" />
+                     Upload Data
                 </CardTitle>
             </CardHeader>
             <CardContent className="flex flex-col items-center justify-center gap-4 h-full">
@@ -86,7 +87,7 @@ export function UploadPanel() {
                     onDrop={handleDrop}
                     onClick={triggerFileSelect}
                 >
-                    <UploadCloudIcon className="h-12 w-12 text-gray-500 mx-auto" />
+                    <FileUpIcon className="h-12 w-12 text-gray-500 mx-auto" />
                     <p className="text-center text-sm text-muted-foreground mt-2">
                         Drag & Drop your file here.
                     </p>
