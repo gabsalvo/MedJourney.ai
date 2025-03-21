@@ -11,7 +11,6 @@ export function DataLibraryView() {
     const [quickCreateOpen, setQuickCreateOpen] = useState(false)
 
     return (
-        <>
             <div className="p-6 space-y-6">
                 <div className="flex justify-between items-center">
                     <h2 className="text-xl font-semibold flex items-center gap-2">
@@ -23,7 +22,6 @@ export function DataLibraryView() {
                         Upload Data
                     </Button>
                 </div>
-
                 <Card>
                     <CardHeader>
                         <CardTitle>📁 No Data Uploaded Yet</CardTitle>
@@ -32,10 +30,8 @@ export function DataLibraryView() {
                         Start uploading medical datasets for analysis.
                     </CardContent>
                 </Card>
+                {/* ✅ Move Dialog Here to Ensure It's Always Rendered */}
+                <QuickCreateDialog open={quickCreateOpen} onOpenChange={setQuickCreateOpen} />
             </div>
-
-            {/* ✅ Move Dialog Here to Ensure It's Always Rendered */}
-            <QuickCreateDialog open={quickCreateOpen} onOpenChange={setQuickCreateOpen} />
-        </>
     )
 }

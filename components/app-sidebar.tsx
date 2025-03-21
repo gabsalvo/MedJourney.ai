@@ -12,7 +12,7 @@ import {
     CompassIcon
 } from "lucide-react";
 
-import { NavDocuments } from "@/components/nav-documents";
+/*import { NavDocuments } from "@/components/nav-documents";*/
 import { NavMain } from "@/components/nav-main";
 import { NavSecondary } from "@/components/nav-secondary";
 import { NavUser } from "@/components/nav-user";
@@ -107,7 +107,7 @@ export function AppSidebar({ setActiveView, ...props }: AppSidebarProps) {
             </SidebarHeader>
             <SidebarContent>
                 <NavMain items={data.navMain} setActiveView={setActiveView} /> {/* ✅ Pass setActiveView */}
-                <NavDocuments items={data.documents} setActiveView={setActiveView} />
+                {/*<NavDocuments items={data.documents} setActiveView={setActiveView} />*/}
                 <NavSecondary items={data.navSecondary}  setActiveView={setActiveView} className="mt-auto" />
             </SidebarContent>
             <SidebarFooter>
