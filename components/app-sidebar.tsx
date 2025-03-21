@@ -39,7 +39,7 @@ const data = {
     },
     navMain: [
         {
-            title: "Analyze",
+            title: "Analyse",
             view: "dashboard" as const,
             icon: BrainCircuitIcon,
         },

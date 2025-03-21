@@ -4,6 +4,8 @@ import { useEffect, useState } from "react"
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { LogOutIcon, UserCircleIcon, CreditCardIcon, SettingsIcon } from "lucide-react"
+import {Input} from "@/components/ui/input"
+import {Label} from "@/components/ui/label"
 
 type Tab = "account" | "billing" | "settings"
 
@@ -80,19 +82,88 @@ export function AccountDialog({
                     {activeTab === "account" && (
                         <div>
                             <h2 className="text-lg font-semibold">Your Account</h2>
-                            <p className="text-sm text-muted-foreground">Update your profile details here.</p>
+                            <p className="text-sm text-muted-foreground">
+                                Update your personal details here.
+                            </p>
+
+                            <div className="mt-4 grid gap-4 max-w-sm">
+                                <div>
+                                    <Label htmlFor="fullName">Full Name</Label>
+                                    <Input id="fullName" placeholder="e.g. Jane Doe" />
+                                </div>
+                                <div>
+                                    <Label htmlFor="email">Email Address</Label>
+                                    <Input id="email" type="email" placeholder="e.g. jane@example.com" />
+                                </div>
+                                <div>
+                                    <Label htmlFor="password">Password</Label>
+                                    <Input id="password" type="password" placeholder="••••••••" />
+                                </div>
+
+                                <Button className="mt-2">Save Changes</Button>
+                            </div>
                         </div>
                     )}
+
                     {activeTab === "billing" && (
                         <div>
                             <h2 className="text-lg font-semibold">Billing Methods</h2>
-                            <p className="text-sm text-muted-foreground">Manage your subscription and invoices.</p>
+                            <p className="text-sm text-muted-foreground">
+                                Manage your subscription and invoices.
+                            </p>
+
+                            <div className="mt-4 space-y-4">
+                                {/* Payment Info */}
+                                <div>
+                                    <Label>Subscription Plan</Label>
+                                    <Input
+                                        readOnly
+                                        value="Pro Tier (Active)"
+                                        className="cursor-default bg-muted"
+                                    />
+                                </div>
+                                <div>
+                                    <Label>Payment Method</Label>
+                                    <Input
+                                        readOnly
+                                        value="•••• •••• •••• 1234"
+                                        className="cursor-default bg-muted"
+                                    />
+                                </div>
+
+                                <div className="flex gap-2">
+                                    <Button variant="outline">Upgrade Plan</Button>
+                                    <Button variant="outline">View Invoices</Button>
+                                </div>
+                            </div>
                         </div>
                     )}
+
                     {activeTab === "settings" && (
                         <div>
                             <h2 className="text-lg font-semibold">Settings</h2>
-                            <p className="text-sm text-muted-foreground">Fine-tune the clustering algorithms.</p>
+                            <p className="text-sm text-muted-foreground">
+                                Fine-tune the clustering algorithms or adjust preferences.
+                            </p>
+
+                            <div className="mt-4 grid gap-4 max-w-sm">
+                                <div>
+                                    <Label htmlFor="maxIter">Max Iterations</Label>
+                                    <Input id="maxIter" type="number" placeholder="300" />
+                                </div>
+
+                                <div>
+                                    <Label htmlFor="clusterCount">Default Clusters</Label>
+                                    <Input id="clusterCount" type="number" placeholder="3" />
+                                </div>
+
+                                <div>
+                                    <Label htmlFor="linkage">Linkage Method</Label>
+                                    <Input id="linkage" placeholder="e.g. single / complete / average" />
+                                </div>
+
+                                <Button className="mt-2">Save Settings</Button>
+                            </div>
                         </div>
                     )}
                 </div>
