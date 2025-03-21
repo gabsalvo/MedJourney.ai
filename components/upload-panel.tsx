@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useRef, DragEvent } from "react";
-import {CloudUploadIcon, FileUpIcon} from "lucide-react";
+import { useState, useRef, DragEvent } from "react";
+import { CloudUploadIcon, FileUpIcon } from "lucide-react";
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
@@ -27,6 +27,7 @@ export function UploadPanel() {
             setFiles(filteredFiles);
         } else {
             console.log("No valid files dropped!");
+            setFiles([]);
         }
     }
 
@@ -57,8 +58,9 @@ export function UploadPanel() {
             setFiles(filteredFiles);
         } else {
             console.log("No valid files selected!");
+            setFiles([]);
         }
-        // Optional: reset the file input.
+        // Reset file input
         e.target.value = "";
     }
 
@@ -72,7 +74,7 @@ export function UploadPanel() {
             <CardHeader>
                 <CardTitle className="flex items-center">
                     <CloudUploadIcon className="mr-2 h-5 w-5 text-blue-700" />
-                     Upload Data
+                    Upload Data
                 </CardTitle>
             </CardHeader>
             <CardContent className="flex flex-col items-center justify-center gap-4 h-full">

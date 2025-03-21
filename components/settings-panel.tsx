@@ -1,6 +1,6 @@
 "use client";
 
-import { SetStateAction, useState} from "react";
+import { SetStateAction, useState } from "react";
 import {motion} from "framer-motion";
 import {Card, CardHeader, CardContent, CardTitle} from "@/components/ui/card";
 import {Button} from "@/components/ui/button";

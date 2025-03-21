@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { useState } from "react"
-import { FolderPlusIcon, FolderIcon, MoreVerticalIcon, PencilIcon, TrashIcon } from "lucide-react"
+import {FolderIcon, MoreVerticalIcon, PencilIcon, TrashIcon, ArchiveIcon, FolderPlusIcon} from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -20,7 +20,8 @@ const initialProjects = [
     { id: 3, name: "Diabetes Risk Clustering", lastEdited: "1 week ago" }
 ]
 
-export function ProjectsView() {
+// @ts-expect-error no prob here with any type
+export function ProjectsView({ setCurrentView }) {
     const [search, setSearch] = useState("")
     const [projects, setProjects] = useState(initialProjects)
     const [editingId, setEditingId] = useState<number | null>(null)
@@ -48,20 +49,25 @@ export function ProjectsView() {
 
     return (
         <div className="p-6 space-y-6">
-            <div className="flex justify-between items-center">
-                <h2 className="text-xl font-semibold">📁 My Projects</h2>
-                <Button className="flex gap-2 cursor-pointer">
-                    <FolderPlusIcon className="h-5 w-5" />
-                    Create New Project
+            <div className="flex justify-between items-center mb-4">
+                {/* Left side: Icon + Heading */}
+                <div className="flex items-center">
+                    <FolderIcon className="mr-2 h-5 w-5 text-blue-700" />
+                    <h2 className="text-xl font-semibold">My Projects</h2>
+                </div>
+
+                {/* Right side: Button */}
+                <Button className="gap-2 cursor-pointer hover:bg-zinc-700" onClick={() => setCurrentView("dashboard")}>
+                    <FolderPlusIcon className="h-4 w-4" />
+                    Start New Project
                 </Button>
             </div>
-
             {/* Search Bar */}
             <Input
                 placeholder="🔍 Search projects..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full"
+                className="w-[20%]"
             />
 
             {/* Project Cards Grid */}
@@ -71,7 +77,7 @@ export function ProjectsView() {
                         <CardHeader className="flex justify-between items-center">
                             {/* Project Name or Editable Input */}
                             <CardTitle className="flex items-center gap-2">
-                                <FolderIcon className="h-5 w-5 text-blue-500" />
+                                <ArchiveIcon className="h-5 w-5 text-blue-700" />
                                 {editingId === project.id ? (
                                     <Input
                                         value={newName}
@@ -79,7 +85,7 @@ export function ProjectsView() {
                                         onBlur={() => handleRename(project.id)}
                                         onKeyDown={(e) => e.key === "Enter" && handleRename(project.id)}
                                         autoFocus
-                                        className="border-b border-gray-400 focus:border-blue-500"
+                                        className="border-b border-blue-700 focus:border-blue-700"
                                     />
                                 ) : (
                                     project.name

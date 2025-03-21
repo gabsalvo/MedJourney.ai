@@ -133,7 +133,7 @@ export function QuickCreateDialog({ open, onOpenChange }: QuickCreateDialogProps
                     <Button className="cursor-pointer" variant="outline" onClick={() => onOpenChange(false)}>
                         Cancel
                     </Button>
-                    <Button className="cursor-pointer" onClick={() => onOpenChange(false)}>
+                    <Button className="cursor-pointer bg-blue-700 hover:bg-blue-500" onClick={() => onOpenChange(false)}>
                         Confirm
                     </Button>
                 </div>

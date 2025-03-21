@@ -15,7 +15,7 @@ export function DataLibraryView() {
             <div className="p-6 space-y-6">
                 <div className="flex justify-between items-center">
                     <h2 className="text-xl font-semibold flex items-center gap-2">
-                        <DatabaseIcon className="h-5 w-5 text-blue-500" />
+                        <DatabaseIcon className="h-5 w-5 text-blue-700" />
                         Data Library
                     </h2>
                     <Button className="flex gap-2 cursor-pointer" onClick={() => setQuickCreateOpen(true)}>

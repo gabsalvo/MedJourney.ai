@@ -73,7 +73,7 @@ export default function Page() {
                             <Dashboard />
                         </>
                     )}
-                    {activeView === "projects" && <ProjectsView />}
+                    {activeView === "projects" && <ProjectsView setCurrentView={setActiveView} />}
                     {activeView === "askMedAI" && <AskMedAIView />}
                     {activeView === "dataLibrary" && <DataLibraryView />}
                     {activeView === "reports" && <ReportsView />}
