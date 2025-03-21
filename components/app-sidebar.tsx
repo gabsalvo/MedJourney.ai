@@ -96,9 +96,9 @@ export function AppSidebar({ setActiveView, ...props }: AppSidebarProps) {
                             className="data-[slot=sidebar-menu-button]:!p-1.5"
                         >
                             <a href="#">
-                                <ActivityIcon className="h-5 w-5 text-blue-500" />
+                                <ActivityIcon className="h-5 w-5 text-blue-700" />
                                 <span className="text-base font-semibold">
-                                    Med<span className="text-blue-500">Journey</span>.ai
+                                    Med<span className="text-blue-700">Journey</span>.ai
                                 </span>
                             </a>
                         </SidebarMenuButton>
