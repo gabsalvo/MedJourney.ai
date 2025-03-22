@@ -12,6 +12,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { ProjectDialog } from "@/components/project-dialog"
 
 // Mock Data for Projects
 const initialProjects = [
@@ -26,6 +27,7 @@ export function ProjectsView({ setCurrentView }) {
     const [projects, setProjects] = useState(initialProjects)
     const [editingId, setEditingId] = useState<number | null>(null)
     const [newName, setNewName] = useState("")
+    const [projectDialogOpen, setProjectDialogOpen] = useState(false)
 
     // Filter projects by search input
     const filteredProjects = projects.filter((project) =>
@@ -73,7 +75,7 @@ export function ProjectsView({ setCurrentView }) {
             {/* Project Cards Grid */}
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {filteredProjects.map((project) => (
-                    <Card key={project.id} className="cursor-pointer hover:shadow-lg transition relative">
+                    <Card key={project.id} className="cursor-pointer hover:shadow-lg transition relative" onClick={() => setProjectDialogOpen(true)}>
                         <CardHeader className="flex justify-between items-center">
                             {/* Project Name or Editable Input */}
                             <CardTitle className="flex items-center gap-2">
@@ -127,6 +129,7 @@ export function ProjectsView({ setCurrentView }) {
                         </CardContent>
                     </Card>
                 ))}
+                <ProjectDialog open={projectDialogOpen} onOpenChange={setProjectDialogOpen} />
             </div>
         </div>
     )

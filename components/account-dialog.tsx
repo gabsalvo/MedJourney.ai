@@ -96,11 +96,10 @@ export function AccountDialog({
                                     <Input id="email" type="email" placeholder="e.g. jane@example.com" />
                                 </div>
                                 <div>
-                                    <Label htmlFor="password">Password</Label>
-                                    <Input id="password" type="password" placeholder="••••••••" />
+                                    <Button className="mt-2 cursor-pointer">Forgot Password?</Button>
                                 </div>
 
-                                <Button className="mt-2">Save Changes</Button>
+                                <Button className="mt-2 cursor-pointer">Save Changes</Button>
                             </div>
                         </div>
                     )}
@@ -148,17 +147,17 @@ export function AccountDialog({
 
                             <div className="mt-4 grid gap-4 max-w-sm">
                                 <div>
-                                    <Label htmlFor="maxIter">Max Iterations</Label>
+                                    <Label htmlFor="maxIter">Max Iterations (K-Means)</Label>
                                     <Input id="maxIter" type="number" placeholder="300" />
                                 </div>
 
                                 <div>
-                                    <Label htmlFor="clusterCount">Default Clusters</Label>
-                                    <Input id="clusterCount" type="number" placeholder="3" />
+                                    <Label htmlFor="clusterCount">Epsilon (DBSCAN)</Label>
+                                    <Input id="clusterCount" type="number" placeholder="0.5" />
                                 </div>
 
                                 <div>
-                                    <Label htmlFor="linkage">Linkage Method</Label>
+                                    <Label htmlFor="linkage">Linkage Method (Agglomerative)</Label>
                                     <Input id="linkage" placeholder="e.g. single / complete / average" />
                                 </div>
 
