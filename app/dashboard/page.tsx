@@ -10,6 +10,7 @@ import { AskMedAIView } from "@/components/ask-med-ai-view"
 import { DataLibraryView } from "@/components/data-library-view"
 import { ReportsView } from "@/components/reports-view"
 import { SettingsView } from "@/components/settings-view"
+import { TakeATourView} from "@/components/TakeATourView";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import { SiteHeader } from "@/components/site-header"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -22,7 +23,7 @@ const supabase = createClient(
 export default function Page() {
     const router = useRouter()
     const [activeView, setActiveView] = useState<
-        "dashboard" | "projects" | "askMedAI" | "dataLibrary" | "reports" | "settings"
+        "dashboard" | "projects" | "askMedAI" | "dataLibrary" | "reports" | "settings" | "takeatour"
     >("dashboard")
 
     const [isLoading, setIsLoading] = useState(true)
@@ -78,6 +79,7 @@ export default function Page() {
                     {activeView === "dataLibrary" && <DataLibraryView />}
                     {activeView === "reports" && <ReportsView />}
                     {activeView === "settings" && <SettingsView />}
+                    {activeView === "takeatour" && <TakeATourView />}
                 </div>
             </SidebarInset>
         </SidebarProvider>

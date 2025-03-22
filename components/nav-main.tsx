@@ -15,10 +15,10 @@ import { QuickCreateDialog } from "@/components/quick-create-dialog"
 type NavMainProps = {
     items: {
         title: string
-        view: "dashboard" | "projects" | "askMedAI"
+        view: "dashboard" | "projects" | "askMedAI" | "takeatour"
         icon?: LucideIcon
     }[]
-    setActiveView: (view: "dashboard" | "projects" | "askMedAI") => void
+    setActiveView: (view: "dashboard" | "projects" | "askMedAI"| "takeatour") => void
 }
 
 export function NavMain({ items, setActiveView }: NavMainProps) {

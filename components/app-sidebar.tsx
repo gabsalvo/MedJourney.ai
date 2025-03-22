@@ -9,7 +9,7 @@ import {
     BrainCircuitIcon,
     SparklesIcon,
     ActivityIcon,
-    /*CompassIcon*/
+    CompassIcon
 } from "lucide-react";
 
 /*import { NavDocuments } from "@/components/nav-documents";*/
@@ -28,7 +28,7 @@ import {
 
 // Define Props to accept setActiveView
 type AppSidebarProps = {
-    setActiveView: (view: "dashboard" | "projects" | "askMedAI" | "dataLibrary" | "reports" | "settings") => void;
+    setActiveView: (view: "dashboard" | "projects" | "askMedAI" | "dataLibrary" | "reports" | "settings" | "takeatour") => void;
 };
 
 const data = {
@@ -53,11 +53,11 @@ const data = {
             view: "askMedAI" as const,
             icon: SparklesIcon,
         },
-        /*{
+        {
             title: "Take A Tour",
-            view: "dashboard" as const,
+            view: "takeatour" as const,
             icon: CompassIcon,
-        },*/
+        },
     ],
     navSecondary: [
         /*{
