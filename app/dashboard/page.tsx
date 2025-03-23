@@ -7,9 +7,6 @@ import { Dashboard } from "@/components/DashboardView";
 import { AppSidebar } from "@/components/app-sidebar"
 import { ProjectsView } from "@/components/projects-view"
 import { AskMedAIView } from "@/components/ask-med-ai-view"
-import { DataLibraryView } from "@/components/data-library-view"
-import { ReportsView } from "@/components/reports-view"
-import { SettingsView } from "@/components/settings-view"
 import { TakeATourView} from "@/components/TakeATourView";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import { SiteHeader } from "@/components/site-header"
@@ -24,7 +21,7 @@ export default function Page() {
     const router = useRouter()
     const [activeView, setActiveView] = useState<
         "dashboard" | "projects" | "askMedAI" | "dataLibrary" | "reports" | "settings" | "takeatour"
-    >("dashboard")
+    >("takeatour")
 
     const [isLoading, setIsLoading] = useState(true)
     const [isLoggedIn, setIsLoggedIn] = useState(false)
@@ -76,9 +73,6 @@ export default function Page() {
                     )}
                     {activeView === "projects" && <ProjectsView setCurrentView={setActiveView} />}
                     {activeView === "askMedAI" && <AskMedAIView />}
-                    {activeView === "dataLibrary" && <DataLibraryView />}
-                    {activeView === "reports" && <ReportsView />}
-                    {activeView === "settings" && <SettingsView />}
                     {activeView === "takeatour" && <TakeATourView />}
                 </div>
             </SidebarInset>

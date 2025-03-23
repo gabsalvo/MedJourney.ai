@@ -144,7 +144,7 @@ export function SettingsPanel() {
                                     <SelectItem value="kmeans" className="cursor-pointer">K-Means</SelectItem>
                                     <SelectItem value="agglomerative" className="cursor-pointer">Agglomerative</SelectItem>
                                     <SelectItem value="dbscan" className="cursor-pointer">DBSCAN</SelectItem>
-                                    <SelectItem value="auto" className="cursor-pointer">Let AI choose for me</SelectItem>
+                                    <SelectItem value="auto" className="cursor-pointer border-2 border-blue-700">MedAI takes care of it</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
