@@ -1,12 +1,13 @@
 import { CalendarIcon, FileTextIcon } from "@radix-ui/react-icons";
-import { BellIcon, Share2Icon } from "lucide-react";
-
+import { BellIcon, Share2Icon, ActivityIcon } from "lucide-react";
+import { Particles } from "@/components/magicui/particles";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import {AnimatedBeamMultipleOutputDemo} from "@/components/example/animated-beam-multiple-outputs";
 import {AnimatedListDemo} from "@/components/example/animated-list-demo";
 import { BentoCard, BentoGrid } from "@/components/magicui/bento-grid";
 import { Marquee } from "@/components/magicui/marquee";
+
 
 const files = [
     {
@@ -33,8 +34,25 @@ const files = [
 
 const features = [
     {
+        Icon: ActivityIcon,
+        name: "Discover MedJourney",
+        description: "Explore how MedJourney empowers clinicians with AI-driven clustering and visualization tools.",
+        href: "https://medjourney-ai.hashnode.space/",
+        cta: "Get Started",
+        className: "w-full h-auto items-center justify-between shadow-md bg-zinc-50 rounded-xl",
+        background: (
+            <Particles
+                className="absolute inset-0 z-0"
+                quantity={300}
+                ease={100}
+                color="#193cb8"
+                refresh
+            />
+        ),
+    },
+    {
         Icon: FileTextIcon,
-        name: "Save your files",
+        name: "Create New Projects",
         description: "We automatically save your files as you type.",
         href: "#",
         cta: "Learn more",
@@ -69,7 +87,7 @@ const features = [
     },
     {
         Icon: BellIcon,
-        name: "Notifications",
+        name: "Various Clustering Algorithms",
         description: "Get notified when something happens.",
         href: "#",
         cta: "Learn more",
@@ -108,6 +126,7 @@ const features = [
 
 
 export function TakeATourView() {
+
     // const [isOpen, setIsOpen] = useState(true)
     return (
         <BentoGrid>
@@ -115,13 +134,4 @@ export function TakeATourView() {
                 <BentoCard key={idx} {...feature} />
             ))}
         </BentoGrid>   );
-
-            {/* <HeroVideoDialog
-                open={isOpen}
-                onOpenChange={setIsOpen}
-                videoSrc="https://www.youtube.com/embed/qh3NGpYRG3I?si=4rb-zSdDkVK9qxxb"
-                showThumbnail={false} // ensures no preview is shown
-                animationStyle="top-in-bottom-out" thumbnailSrc={""}
-                className="z-auto"/>*/}
-
 }
