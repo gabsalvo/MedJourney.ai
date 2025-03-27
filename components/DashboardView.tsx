@@ -31,9 +31,9 @@ export function Dashboard() {
                     className="border-r border-gray-300 mb-[-300px]"
                 >
                     <div className="flex flex-col h-[750px]">
-                        <div className="flex-1">
+                        {/*<div className="flex-1">
                             <UploadPanel />
-                        </div>
+                        </div>*/}
                         <div className="flex-1">
                             <SettingsPanel />
                         </div>

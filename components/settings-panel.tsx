@@ -1,6 +1,6 @@
 "use client";
 
-import { SetStateAction, useState } from "react";
+import {SetStateAction, useRef, useState, DragEvent} from "react";
 import {motion} from "framer-motion";
 import {Card, CardHeader, CardContent, CardTitle} from "@/components/ui/card";
 import {Button} from "@/components/ui/button";
@@ -15,7 +15,7 @@ import {Checkbox} from "@/components/ui/checkbox";
 import {Label} from "@/components/ui/label";
 import {Input} from "@/components/ui/input";
 import {Slider} from "@/components/ui/slider";
-import {Settings as SettingsIcon} from "lucide-react";
+import {Settings as SettingsIcon, CloudUploadIcon, FileUpIcon } from "lucide-react";
 
 // Define base settings interface
 type AnalysisSettingsBase = {
@@ -50,6 +50,9 @@ type AnalysisSettings = KMeansSettings | AgglomerativeSettings | DBSCANSettings 
 export function SettingsPanel() {
     const [currentStep, setCurrentStep] = useState(1);
     const [algo, setAlgo] = useState<"kmeans" | "agglomerative" | "dbscan" | "auto">("auto");
+    const [files, setFiles] = useState<File[]>([]);
+    const [dragActive, setDragActive] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     // K-Means settings
     const [clusterCount, setClusterCount] = useState(3);
@@ -111,8 +114,124 @@ export function SettingsPanel() {
         // Trigger your backend API or clustering logic here
     };
 
+    // Handle drop event and filter files by accepted extensions.
+    function handleDrop(e: DragEvent<HTMLDivElement>) {
+        e.preventDefault();
+        e.stopPropagation();
+        setDragActive(false);
+
+        const droppedFiles = Array.from(e.dataTransfer.files);
+        const acceptedExtensions = [".csv", ".xls", ".xlsx", ".txt"];
+        const filteredFiles = droppedFiles.filter((file) =>
+            acceptedExtensions.some((ext) => file.name.toLowerCase().endsWith(ext))
+        );
+
+        if (filteredFiles.length) {
+            console.log("Valid files dropped:", filteredFiles);
+            setFiles(filteredFiles);
+        } else {
+            console.log("No valid files dropped!");
+            setFiles([]);
+        }
+    }
+
+    // Update drag state.
+    function handleDragOver(e: DragEvent<HTMLDivElement>) {
+        e.preventDefault();
+        e.stopPropagation();
+        setDragActive(true);
+    }
+
+    // Reset drag state when cursor leaves.
+    function handleDragLeave(e: DragEvent<HTMLDivElement>) {
+        e.preventDefault();
+        e.stopPropagation();
+        setDragActive(false);
+    }
+
+    // Handle file selection via the classic file input.
+    function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
+        const selectedFiles = e.target.files ? Array.from(e.target.files) : [];
+        const acceptedExtensions = [".csv", ".xls", ".xlsx", ".txt"];
+        const filteredFiles = selectedFiles.filter((file) =>
+            acceptedExtensions.some((ext) => file.name.toLowerCase().endsWith(ext))
+        );
+
+        if (filteredFiles.length) {
+            console.log("Valid files selected:", filteredFiles);
+            setFiles(filteredFiles);
+        } else {
+            console.log("No valid files selected!");
+            setFiles([]);
+        }
+        // Reset file input
+        e.target.value = "";
+    }
+
+    // Trigger file input click.
+    function triggerFileSelect() {
+        fileInputRef.current?.click();
+    }
+
     return (
-        <Card className="h-[300px] flex flex-col justify-between mr-5 ">
+        <>
+        <Card className="h-[350px] flex flex-col justify-between mr-5">
+            <CardHeader>
+                <CardTitle className="flex items-center">
+                    <CloudUploadIcon className="mr-2 h-5 w-5 text-blue-700" />
+                    Upload Data
+                </CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-col items-center justify-center gap-4 h-full">
+                {/* Drag & Drop Area */}
+                <div
+                    className={`w-full p-6 border-2 border-dashed rounded-md transition-colors cursor-pointer ${
+                        dragActive ? "border-blue-500 bg-blue-50" : "border-gray-300"
+                    }`}
+                    onDragOver={handleDragOver}
+                    onDragEnter={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                    onDrop={handleDrop}
+                    onClick={triggerFileSelect}
+                >
+                    <FileUpIcon className="h-12 w-12 text-gray-500 mx-auto" />
+                    <p className="text-center text-sm text-muted-foreground mt-2">
+                        Drag & Drop your file here.
+                    </p>
+                    <p className="text-center text-xs text-muted-foreground">
+                        (Accepted formats: CSV, Excel, or TXT)
+                    </p>
+                    <input
+                        type="file"
+                        multiple
+                        accept=".csv,.xls,.xlsx,.txt"
+                        className="hidden"
+                        ref={fileInputRef}
+                        onChange={handleFileUpload}
+                    />
+                </div>
+
+                {/* Small Button for file selection */}
+                <Button size="sm" onClick={triggerFileSelect} className="cursor-pointer">
+                    Select a file
+                </Button>
+
+                {/* Display selected files, if any */}
+                {files.length > 0 && (
+                    <div className="w-full">
+                        <p className="text-sm font-medium">Selected File:</p>
+                        <ul className="list-disc ml-6">
+                            {files.map((file, index) => (
+                                <li key={index} className="text-sm">
+                                    {file.name}
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
+            </CardContent>
+        </Card>
+        <Card className="h-[300px] flex flex-col justify-between mr-5 mt-7">
             <CardHeader>
                 <CardTitle className="flex items-center">
                     <SettingsIcon className="mr-2 h-5 w-5 text-blue-700"/> Analysis Settings
@@ -282,5 +401,6 @@ export function SettingsPanel() {
                 </motion.div>
             </CardContent>
         </Card>
+        </>
     );
 }
