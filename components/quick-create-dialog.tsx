@@ -1,47 +1,108 @@
 "use client";
 
-import { useState, DragEvent } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { useState, useEffect, DragEvent } from "react";
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogDescription,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input"; // or your combobox
-// import { Select, ... } if you're using a real combobox from your UI lib
+import { Input } from "@/components/ui/input";
+import {
+    Select,
+    SelectTrigger,
+    SelectValue,
+    SelectContent,
+    SelectItem,
+} from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
 
-type UploadDialogProps = {
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
+
+interface UploadDialogProps {
     open: boolean;
     onOpenChange: (value: boolean) => void;
-};
+}
 
 export function QuickCreateDialog({ open, onOpenChange }: UploadDialogProps) {
     const [files, setFiles] = useState<File[]>([]);
-    const [dragActive, setDragActive] = useState(false);
-    // For the combobox or project selection
     const [project, setProject] = useState("");
+    const [algorithm, setAlgorithm] = useState("kmeans");
+    const [dragActive, setDragActive] = useState(false);
+    const [downloadLink, setDownloadLink] = useState<string | null>(null);
+    const [loading, setLoading] = useState(false);
+    const [userId, setUserId] = useState<string | null>(null);
+
+    // Get the authenticated user ID
+    useEffect(() => {
+        const fetchUser = async () => {
+            const { data, error } = await supabase.auth.getUser();
+            if (data?.user) {
+                setUserId(data.user.id);
+            } else {
+                console.error("Failed to fetch user:", error);
+            }
+        };
+        fetchUser();
+    }, []);
 
     function handleDragOver(e: DragEvent<HTMLDivElement>) {
         e.preventDefault();
-        e.stopPropagation();
         setDragActive(true);
     }
 
     function handleDragLeave(e: DragEvent<HTMLDivElement>) {
         e.preventDefault();
-        e.stopPropagation();
         setDragActive(false);
     }
 
     function handleDrop(e: DragEvent<HTMLDivElement>) {
         e.preventDefault();
-        e.stopPropagation();
         setDragActive(false);
-
         const droppedFiles = Array.from(e.dataTransfer.files);
-        // Filter or validate here if you want
         setFiles(droppedFiles);
     }
 
     function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
         if (!e.target.files) return;
         setFiles(Array.from(e.target.files));
+    }
+
+    async function handleAnalyse() {
+        if (!userId || files.length === 0 || !project) return;
+
+        const formData = new FormData();
+        formData.append("file", files[0]);
+        formData.append("user_id", userId);
+        formData.append("project_name", project);
+        formData.append("algorithm", algorithm);
+        formData.append("params", JSON.stringify({}));
+
+        try {
+            setLoading(true);
+            const res = await fetch("http://localhost:8000/api/clustering/clustering", {
+                method: "POST",
+                body: formData,
+            });
+
+            const data = await res.json();
+            if (data?.report_zip_path) {
+                setDownloadLink(
+                    `http://localhost:8000/api/download-proxy?user_id=${data.user_id}&project_name=${data.project_name}`
+                );
+            }
+        } catch (err) {
+            console.error("Errore durante l'analisi:", err);
+        } finally {
+            setLoading(false);
+        }
     }
 
     return (
@@ -54,16 +115,13 @@ export function QuickCreateDialog({ open, onOpenChange }: UploadDialogProps) {
                     </DialogDescription>
                 </DialogHeader>
 
-                {/* Two-column layout */}
                 <div className="mt-4 grid grid-cols-1 gap-6 md:grid-cols-2">
-                    {/* LEFT COLUMN - File Upload */}
                     <div>
-                        <p className="text-sm text-muted-foreground">Upload your Files (CSV, Excel, or TXT):</p>
+                        <p className="text-sm text-muted-foreground">
+                            Upload your Files (CSV, Excel, or TXT):
+                        </p>
                         <div
-                            className={`
-                mt-2 p-6 border-2 border-dashed rounded-md transition-colors
-                ${dragActive ? "border-blue-500 bg-blue-50" : "border-gray-300"}
-              `}
+                            className={`mt-2 p-6 border-2 border-dashed rounded-md transition-colors ${dragActive ? "border-blue-500 bg-blue-50" : "border-gray-300"}`}
                             onDragOver={handleDragOver}
                             onDragEnter={handleDragOver}
                             onDragLeave={handleDragLeave}
@@ -75,61 +133,65 @@ export function QuickCreateDialog({ open, onOpenChange }: UploadDialogProps) {
                         </div>
 
                         <div className="mt-4 flex justify-center">
-                            <Button className="cursor-pointer" asChild>
+                            <Button asChild>
                                 <label>
                                     Select a file
                                     <input
                                         type="file"
                                         onChange={handleFileUpload}
                                         accept=".csv,.xls,.xlsx,.txt"
-                                        multiple
                                         hidden
                                     />
                                 </label>
                             </Button>
                         </div>
 
-                        {/* Display selected files */}
                         {files.length > 0 && (
                             <div className="mt-2">
-                                <p className="text-sm font-medium">Selected File(s):</p>
-                                <ul className="list-disc ml-6">
-                                    {files.map((file, index) => (
-                                        <li key={index} className="text-sm">
-                                            {file.name}
-                                        </li>
-                                    ))}
-                                </ul>
+                                <p className="text-sm font-medium">Selected File:</p>
+                                <p className="text-sm">{files[0].name}</p>
                             </div>
                         )}
                     </div>
 
-                    {/* RIGHT COLUMN - Project Selection / Creation */}
-                    <div>
-                        <p className="text-sm text-muted-foreground mb-2">
-                            Name Your New Project
-                        </p>
+                    <div className="space-y-4">
+                        <div>
+                            <Label className="mb-2 block text-sm font-semibold">Project Name</Label>
+                            <Input
+                                placeholder="Breast cancer clustering..."
+                                value={project}
+                                onChange={(e) => setProject(e.target.value)}
+                            />
+                        </div>
 
-                        {/* Placeholder combobox / select / input */}
-                        {/* You can replace this with your UI library's Select or Combobox */}
-                        <Input
-                            placeholder="Breast cancer Clustering Analysis..."
-                            value={project}
-                            onChange={(e) => setProject(e.target.value)}
-                        />
-
-                        {/* Possibly add a button to create the project */}
+                        <div>
+                            <Label className="mb-2 block text-sm font-semibold">Algorithm</Label>
+                            <Select value={algorithm} onValueChange={(val) => setAlgorithm(val)}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Choose algorithm" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="kmeans">K-Means</SelectItem>
+                                    <SelectItem value="agglomerative">Agglomerative</SelectItem>
+                                    <SelectItem value="dbscan">DBSCAN</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
                     </div>
                 </div>
 
-                {/* Footer Buttons: Cancel/Confirm */}
                 <div className="mt-6 flex justify-end gap-2">
-                    <Button variant="outline" onClick={() => onOpenChange(false)} className="cursor-pointer">
+                    <Button variant="outline" onClick={() => onOpenChange(false)} disabled={loading}>
                         Cancel
                     </Button>
-                    <Button onClick={() => onOpenChange(false)}  className="cursor-pointer">
-                        Analyse
+                    <Button onClick={handleAnalyse} disabled={loading || !userId}>
+                        {loading ? "Analysing..." : "Analyse"}
                     </Button>
+                    {downloadLink && (
+                        <a href={downloadLink} target="_blank" rel="noopener noreferrer">
+                            <Button variant="outline">Download Report</Button>
+                        </a>
+                    )}
                 </div>
             </DialogContent>
         </Dialog>

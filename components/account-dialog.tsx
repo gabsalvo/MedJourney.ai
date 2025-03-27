@@ -88,18 +88,8 @@ export function AccountDialog({
 
                             <div className="mt-4 grid gap-4 max-w-sm">
                                 <div>
-                                    <Label htmlFor="fullName">Full Name</Label>
-                                    <Input id="fullName" placeholder="e.g. Jane Doe" />
-                                </div>
-                                <div>
-                                    <Label htmlFor="email">Email Address</Label>
-                                    <Input id="email" type="email" placeholder="e.g. jane@example.com" />
-                                </div>
-                                <div>
                                     <Button className="mt-2 cursor-pointer">Forgot Password?</Button>
                                 </div>
-
-                                <Button className="mt-2 cursor-pointer">Save Changes</Button>
                             </div>
                         </div>
                     )}
