@@ -55,6 +55,7 @@ const features = [
         name: "Create New Projects",
         description: "We automatically save your files as you type.",
         href: "#",
+        view: "projects",
         cta: "Learn more",
         className: "col-span-3 lg:col-span-1",
         background: (
@@ -90,6 +91,7 @@ const features = [
         name: "Various Clustering Algorithms",
         description: "Get notified when something happens.",
         href: "#",
+        view: "dashboard",
         cta: "Learn more",
         className: "col-span-3 lg:col-span-2",
         background: (
@@ -101,6 +103,7 @@ const features = [
         name: "Integrations",
         description: "Supports 100+ integrations and counting.",
         href: "#",
+        view: "askMedAI",
         cta: "Learn more",
         className: "col-span-3 lg:col-span-2",
         background: (
@@ -124,14 +127,17 @@ const features = [
     },
 ];
 
+type TakeATourViewProps = {
+    setActiveView: (view: "dashboard" | "projects" | "askMedAI") => void;
+};
 
-export function TakeATourView() {
 
-    // const [isOpen, setIsOpen] = useState(true)
+export function TakeATourView({ setActiveView }: TakeATourViewProps) {
+
     return (
         <BentoGrid>
             {features.map((feature, idx) => (
-                <BentoCard key={idx} {...feature} />
+                <BentoCard key={idx} {...feature}  onClick={() => setActiveView(feature.view as "dashboard" | "projects" | "askMedAI")}/>
             ))}
         </BentoGrid>   );
 }

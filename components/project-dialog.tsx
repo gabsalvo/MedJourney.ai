@@ -1,113 +1,137 @@
 "use client";
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import React, { useState, useEffect } from "react";
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogDescription,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
-// Example structure to hold project info (files, reports, etc.)
-type ProjectInfo = {
+// Define the structure for the project info returned by the backend.
+export type ProjectInfo = {
     name: string;
-    files: Array<{ id: number; fileName: string; uploadedAt: string }>;
-    hasReport: boolean;
-    reportLink?: string;
-    clusterVisualLink?: string;
+    zipLink?: string;
+    manifest?: {
+        n_clusters?: number;
+        algorithm?: string;
+        created_at?: string;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        [key: string]: any;
+    };
 };
 
 type ProjectDialogProps = {
     open: boolean;
     onOpenChange: (value: boolean) => void;
-    project?: ProjectInfo;  // optional prop to pass the project's info
+    userId: string;
+    projectName: string;
 };
 
-export function ProjectDialog({ open, onOpenChange, project }: ProjectDialogProps) {
-    // Dummy fallback if no project prop is passed
-    const defaultProject: ProjectInfo = {
-        name: "Untitled Project",
-        files: [
-            { id: 1, fileName: "patient_data.csv", uploadedAt: "2025-03-18" },
-            { id: 2, fileName: "lab_results.xlsx", uploadedAt: "2025-03-20" },
-        ],
-        hasReport: true,
-        reportLink: "#",        // placeholder link
-        clusterVisualLink: "#", // placeholder link
-    };
+export function ProjectDialog({
+                                  open,
+                                  onOpenChange,
+                                  userId,
+                                  projectName,
+                              }: ProjectDialogProps) {
+    const [projectData, setProjectData] = useState<ProjectInfo | null>(null);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string | null>(null);
 
-    const currentProject = project || defaultProject;
+    useEffect(() => {
+        if (!open) return;
+        setLoading(true);
+        fetch(
+            `http://127.0.0.1:8000/api/project-info?user_id=${encodeURIComponent(
+                userId
+            )}&project_name=${encodeURIComponent(projectName)}`
+        )
+            .then(async (res) => {
+                if (!res.ok) {
+                    const text = await res.text();
+                    throw new Error(`Error ${res.status}: ${text}`);
+                }
+                return res.json();
+            })
+            .then((data: ProjectInfo) => {
+                setProjectData(data);
+                setLoading(false);
+            })
+            .catch((err) => {
+                console.error(err);
+                setError("Failed to load project info.");
+                setLoading(false);
+            });
+    }, [open, userId, projectName]);
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-xl md:max-w-2xl lg:max-w-3xl">
                 <DialogHeader>
-                    <DialogTitle>{currentProject.name}</DialogTitle>
+                    <DialogTitle>{projectData?.name || "Project Details"}</DialogTitle>
                     <DialogDescription>
-                        View the files and any available clustering reports for this project.
+                        {projectData?.manifest?.algorithm
+                            ? `Clustering report using ${projectData.manifest.algorithm}.`
+                            : "View metadata and download report."}
                     </DialogDescription>
                 </DialogHeader>
 
-                {/* Main Content Scrollable Area (optional) */}
-                <ScrollArea className="max-h-[300px]">
-                    {/* Files List */}
-                    <Label className="text-sm font-semibold mb-2 block">Files</Label>
-                    <div className="grid gap-4">
-                        {currentProject.files.map((f) => (
-                            <Card key={f.id}>
-                                <CardHeader className="flex items-center justify-between">
-                                    <CardTitle className="text-sm font-medium">{f.fileName}</CardTitle>
-                                    <span className="text-xs text-muted-foreground">
-                    {f.uploadedAt}
-                  </span>
-                                </CardHeader>
-                            </Card>
-                        ))}
+                {loading && (
+                    <p className="text-sm text-muted-foreground mt-4">
+                        Loading project info...
+                    </p>
+                )}
+
+                {error && (
+                    <div className="text-red-500 mt-4">
+                        <p>{error}</p>
+                        <div className="mt-6 flex justify-end">
+                            <Button variant="outline" onClick={() => onOpenChange(false)}>
+                                Close
+                            </Button>
+                        </div>
                     </div>
+                )}
 
-                    {/* If a report is generated, show it */}
-                    {currentProject.hasReport && (
-                        <div className="mt-6">
-                            <Label className="text-sm font-semibold mb-2 block">Report</Label>
-                            <Card>
-                                <CardContent className="space-y-2">
-                                    <p className="text-sm text-muted-foreground">
-                                        A clustering report is available. You can review the details below or download it.
-                                    </p>
-                                    <Button variant="outline" asChild>
-                                        <a href={currentProject.reportLink ?? "#"} target="_blank" rel="noopener noreferrer">
-                                            View/Download Report
-                                        </a>
-                                    </Button>
-                                </CardContent>
-                            </Card>
+                {projectData && !error && (
+                    <>
+                        <div className="mt-4 space-y-1 text-sm text-muted-foreground">
+                            {projectData.manifest?.n_clusters !== undefined && (
+                                <p>
+                                    <strong>Clusters:</strong> {projectData.manifest.n_clusters}
+                                </p>
+                            )}
+                            {projectData.manifest?.created_at && (
+                                <p>
+                                    <strong>Created:</strong>{" "}
+                                    {new Date(
+                                        projectData.manifest.created_at
+                                    ).toLocaleString()}
+                                </p>
+                            )}
                         </div>
-                    )}
 
-                    {/* If there is a clustering visualization link, show it */}
-                    {currentProject.clusterVisualLink && (
-                        <div className="mt-6">
-                            <Label className="text-sm font-semibold mb-2 block">Clustering Visual</Label>
-                            <Card>
-                                <CardContent className="space-y-2">
-                                    <p className="text-sm text-muted-foreground">
-                                        Visual representation of the clusters. You can open it in a new tab or embed it directly.
-                                    </p>
-                                    <Button variant="outline" asChild>
-                                        <a href={currentProject.clusterVisualLink} target="_blank" rel="noopener noreferrer">
-                                            View Clusters
-                                        </a>
-                                    </Button>
-                                </CardContent>
-                            </Card>
-                        </div>
-                    )}
-                </ScrollArea>
-
-                {/* Footer Buttons */}
-                <div className="mt-6 flex justify-end space-x-2">
-                    <Button variant="outline" onClick={() => onOpenChange(false)}>
-                        Close
-                    </Button>
-                </div>
+                        {projectData.zipLink && (
+                            <div className="mt-6">
+                                <Label className="text-sm font-semibold mb-2 block">
+                                    Download Report
+                                </Label>
+                                <Button
+                                    variant="outline"
+                                    onClick={() => {
+                                        const proxyURL = `http://localhost:8000/api/download-proxy?user_id=${userId}&project_name=${projectName}`;
+                                        window.open(proxyURL, "_blank");
+                                    }}
+                                >
+                                    Download ZIP
+                                </Button>
+                            </div>
+                        )}
+                    </>
+                )}
             </DialogContent>
         </Dialog>
     );

@@ -73,7 +73,7 @@ export default function Page() {
                     )}
                     {activeView === "projects" && <ProjectsView setCurrentView={setActiveView} />}
                     {activeView === "askMedAI" && <AskMedAIView />}
-                    {activeView === "takeatour" && <TakeATourView />}
+                    {activeView === "takeatour" && <TakeATourView setActiveView={setActiveView} />}
                 </div>
             </SidebarInset>
         </SidebarProvider>
