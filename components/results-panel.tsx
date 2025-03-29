@@ -21,10 +21,11 @@ function isValidClusterData(data: unknown): data is { points: ClusterPoint[] } {
     return (
         typeof data === "object" &&
         data !== null &&
-        "points" in data &&
-        Array.isArray((data as any).points)
+        Object.prototype.hasOwnProperty.call(data, "points") &&
+        Array.isArray((data as { points: unknown }).points)
     );
 }
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function ResultsPanel({ clusters, manifest, isLoading }: ResultsPanelProps) {
     if (isLoading) {
