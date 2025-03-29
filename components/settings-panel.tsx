@@ -27,8 +27,17 @@ const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
+interface SettingsPanelProps {
+    onAnalysisDone: (
+        clusters: unknown,
+        manifest: unknown,
+        xai: unknown
+    ) => void;
+    setIsLoading: (value: boolean) => void
+    isLoading: boolean;
+}
 
-export function SettingsPanel() {
+export function SettingsPanel({ onAnalysisDone, setIsLoading, isLoading}: SettingsPanelProps) {
     const [currentStep, setCurrentStep] = useState(1);
     const [algo, setAlgo] = useState<"kmeans" | "agglomerative" | "dbscan" | "auto">(
         "auto"
@@ -53,8 +62,6 @@ export function SettingsPanel() {
     // Common settings
     const [projectName, setProjectName] = useState("");
     const [generateReport] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
-
 
     const handleNext = () => setCurrentStep((prev) => prev + 1);
     const handleBack = () => setCurrentStep((prev) => prev - 1);
@@ -125,9 +132,10 @@ export function SettingsPanel() {
             const data = await response.json();
             console.log("✅ Clustering completato:", data);
 
-            // Esempio di utilizzo dei dati
-            // setClustersData(data.frontend_data.clusters);
-            // setXAIData(data.frontend_data.xai);
+            const { clusters, manifest, xai } = data.frontend_data;
+            // CHIAMA LA CALLBACK
+            onAnalysisDone(clusters, manifest, xai);
+
         } catch (err) {
             console.error("Errore durante l’analisi:", err);
             alert("Errore durante l’analisi.");

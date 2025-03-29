@@ -112,7 +112,7 @@ const features = [
     },
     {
         Icon: CalendarIcon,
-        name: "Calendar",
+        name: "File Preprocessing",
         description: "Use the calendar to filter your files by date.",
         className: "col-span-3 lg:col-span-1",
         href: "#",

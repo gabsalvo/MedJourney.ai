@@ -1,5 +1,6 @@
 "use client";
 
+import React, {useState} from "react";
 import {
     ResizablePanelGroup,
     ResizablePanel,
@@ -7,12 +8,27 @@ import {
 } from "@/components/ui/resizable";
 
 import { TipsPanel } from "@/components/tips-panel";
-import { UploadPanel } from "@/components/upload-panel";
 import { SettingsPanel } from "@/components/settings-panel";
 import { ResultsPanel } from "@/components/results-panel";
 import { ExplainableAIPanel } from "@/components/explainable-ai-view";
 
 export function Dashboard() {
+    const [clustersData, setClustersData] = useState<unknown>(null);
+    const [manifestData, setManifestData] = useState<unknown>(null);
+    const [xaiData, setXaiData] = useState<unknown>(null);
+    const [isLoading, setIsLoading] = useState(false);
+
+    // 2. Callback chiamata da SettingsPanel a fine analisi
+    const handleAnalysisDone = (
+        clusters: unknown,
+        manifest: unknown,
+        xai: unknown
+    ) => {
+        setClustersData(clusters);
+        setManifestData(manifest);
+        setXaiData(xai);
+    };
+
     return (
         <>
         <div className="hidden md:flex flex-col h-[820px]">
@@ -35,7 +51,7 @@ export function Dashboard() {
                             <UploadPanel />
                         </div>*/}
                         <div className="flex-1">
-                            <SettingsPanel />
+                            <SettingsPanel onAnalysisDone={handleAnalysisDone} setIsLoading={setIsLoading} isLoading={isLoading}/>
                         </div>
                     </div>
                 </ResizablePanel>
@@ -47,14 +63,14 @@ export function Dashboard() {
                     <ResizablePanelGroup direction="vertical" >
                         {/* Top: Results */}
                         <ResizablePanel defaultSize={63} minSize={20} className="border-b border-gray-300">
-                            <ResultsPanel />
+                            <ResultsPanel clusters={clustersData} manifest={manifestData} isLoading={isLoading}/>
                         </ResizablePanel>
 
                         <ResizableHandle withHandle />
 
                         {/* Bottom: Explainable AI */}
                         <ResizablePanel defaultSize={30} minSize={10}>
-                            <ExplainableAIPanel />
+                            <ExplainableAIPanel xai={xaiData} isLoading={isLoading}/>
                         </ResizablePanel>
                     </ResizablePanelGroup>
                 </ResizablePanel>
@@ -64,16 +80,13 @@ export function Dashboard() {
     <div className="flex md:hidden flex-col h-screen overflow-y-auto p-4 space-y-4">
         {/* On mobile, omit TipsPanel */}
         <div>
-            <UploadPanel />
+            <SettingsPanel onAnalysisDone={handleAnalysisDone} setIsLoading={setIsLoading} isLoading={isLoading}/>
         </div>
         <div>
-            <SettingsPanel />
+            <ResultsPanel clusters={clustersData} manifest={manifestData} isLoading={isLoading}/>
         </div>
         <div>
-            <ResultsPanel />
-        </div>
-        <div>
-            <ExplainableAIPanel />
+            <ExplainableAIPanel  xai={xaiData} isLoading={isLoading}/>
         </div>
     </div>
 </>
