@@ -1,76 +1,103 @@
-"use client"
+"use client";
 
 import {
-    ScatterChart, Scatter, XAxis, YAxis, CartesianGrid,
-} from "recharts"
+    ScatterChart,
+    Scatter,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    ResponsiveContainer,
+} from "recharts";
 import {
-    ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent
-} from "@/components/ui/chart"
+    ChartContainer,
+    ChartTooltip,
+    ChartTooltipContent,
+    ChartLegend,
+    ChartLegendContent,
+} from "@/components/ui/chart";
 
 type ClusterPoint = {
-    [key: string]: number | string
-    cluster: number
-}
+    [key: string]: number | string;
+    cluster: number;
+};
 
 interface ClusteringChartProps {
-    points: ClusterPoint[]
+    points: ClusterPoint[];
 }
 
 export function ClusteringChart({ points }: ClusteringChartProps) {
-    if (points.length === 0) return null
+    if (points.length === 0) return null;
 
-    // 1. Identifica le dimensioni numeriche (escludi 'cluster')
-    const numericKeys = Object.keys(points[0]).filter(
-        key => key !== "cluster" && typeof points[0][key] === "number"
-    )
+    const xKey = "x";
+    const yKey = "y";
 
-    if (numericKeys.length < 2) {
-        return <p className="text-sm text-muted-foreground">Not enough dimensions to display a scatter plot.</p>
-    }
-
-    const [xKey, yKey] = numericKeys
-
-    // 2. Raggruppa i punti per cluster
+    // Group points by cluster
     const grouped = points.reduce((acc, point) => {
-        const key = `cluster${point.cluster}`
-        if (!acc[key]) acc[key] = []
-        acc[key].push(point)
-        return acc
-    }, {} as Record<string, ClusterPoint[]>)
+        const clusterKey = `cluster${point.cluster}`;
+        if (!acc[clusterKey]) acc[clusterKey] = [];
+        acc[clusterKey].push(point);
+        return acc;
+    }, {} as Record<string, ClusterPoint[]>);
 
-    // 3. Crea la config colori dinamica
-    const colors = [
-        "hsl(var(--chart-1))",
-        "hsl(var(--chart-2))",
-        "hsl(var(--chart-3))",
-        "hsl(var(--chart-4))",
-        "hsl(var(--chart-5))"
-    ]
+    // Tailwind-inspired HEX colors
+    const tailwindHexColors = [
+        "#1d4ed8", // blue-700
+        "#16a34a", // green-600
+        "#b91c1c", // red-700
+        "#ca8a04", // yellow-600
+        "#6b21a8", // purple-700
+    ];
+
     const chartConfig = Object.keys(grouped).reduce((acc, key, i) => {
         acc[key] = {
             label: `Cluster ${key.replace("cluster", "")}`,
-            color: colors[i % colors.length]
-        }
-        return acc
-    }, {} as Record<string, { label: string; color: string }>)
+            color: tailwindHexColors[i % tailwindHexColors.length],
+        };
+        return acc;
+    }, {} as Record<string, { label: string; color: string }>);
 
     return (
-        <ChartContainer config={chartConfig} className="min-h-[300px] w-full">
-            <ScatterChart>
-                <CartesianGrid />
-                <XAxis dataKey={xKey} name={xKey} />
-                <YAxis dataKey={yKey} name={yKey} />
-                <ChartTooltip content={<ChartTooltipContent />} />
-                <ChartLegend content={<ChartLegendContent nameKey="cluster" />} />
-                {Object.entries(grouped).map(([key, data]) => (
-                    <Scatter
-                        key={key}
-                        name={chartConfig[key].label}
-                        data={data}
-                        fill={chartConfig[key].color}
-                    />
-                ))}
-            </ScatterChart>
-        </ChartContainer>
-    )
+        <div className="w-full space-y-3">
+            <ChartContainer config={chartConfig} className="min-h-[300px] w-full">
+                <ResponsiveContainer width="100%" height={300}>
+                    <ScatterChart>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis
+                            dataKey={xKey}
+                            name="Component 1"
+                            label={{ value: "Component 1", position: "insideBottom", offset: -5 }}
+                            tickLine={false}
+                            axisLine={false}
+                        />
+                        <YAxis
+                            dataKey={yKey}
+                            name="Component 2"
+                            label={{ value: "Component 2", angle: -90, position: "insideLeft" }}
+                            tickLine={false}
+                            axisLine={false}
+                        />
+                        <ChartTooltip
+                            content={
+                                <ChartTooltipContent
+                                    labelKey="cluster"
+                                    nameKey="cluster"
+                                />
+                            }
+                        />
+                        <ChartLegend
+                            content={<ChartLegendContent nameKey="cluster" />}
+                        />
+                        {Object.entries(grouped).map(([key, data]) => (
+                            <Scatter
+                                key={key}
+                                name={chartConfig[key].label}
+                                data={data}
+                                fill={chartConfig[key].color}
+                            />
+                        ))}
+                    </ScatterChart>
+                </ResponsiveContainer>
+            </ChartContainer>
+        </div>
+    );
 }

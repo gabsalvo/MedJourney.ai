@@ -78,7 +78,7 @@ export function ResultsPanel({ clusters, manifest, isLoading }: ResultsPanelProp
     // 3. Altrimenti => abbiamo i dati, mostriamo i grafici (o tabella, etc.)
     if (isValidClusterData(clusters)) {
         return (
-            <Card className="h-[450px] flex flex-col ml-5">
+            <Card className="h-auto flex flex-col ml-5">
                 <CardHeader>
                     <CardTitle className="flex items-center">
                         <BoxesIcon className="mr-2 h-5 w-5 text-blue-700" />
