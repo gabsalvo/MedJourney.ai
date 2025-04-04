@@ -8,44 +8,39 @@ interface Item {
     description: string;
     icon: string;
     color: string;
-    time: string;
 }
 
 let notifications = [
     {
-        name: "Payment received",
-        description: "Magic UI",
-        time: "15m ago",
-
-        icon: "💸",
-        color: "#00C9A7",
+        name: "MedAI",
+        description: "Interprets your results like a biomedical expert",
+        icon: "🧠", // brain
+        color: "#4F46E5", // indigo-600: intelligence, depth
     },
     {
-        name: "User signed up",
-        description: "Magic UI",
-        time: "10m ago",
-        icon: "👤",
-        color: "#FFB800",
+        name: "K-Means",
+        description: "Groups data into clean, spherical clusters",
+        icon: "📊", // bar chart
+        color: "#10B981", // emerald-500: clean, efficient
     },
     {
-        name: "New message",
-        description: "Magic UI",
-        time: "5m ago",
-        icon: "💬",
-        color: "#FF3D71",
+        name: "Agglomerative",
+        description: "Builds hierarchies by merging similar samples",
+        icon: "🪜", // ladder for hierarchy
+        color: "#6366F1", // indigo-500: hierarchical logic
     },
     {
-        name: "New event",
-        description: "Magic UI",
-        time: "2m ago",
-        icon: "🗞️",
-        color: "#1E86FF",
+        name: "DBSCAN",
+        description: "Finds dense regions and ignores outliers",
+        icon: "🌌", // starry sky (for density/outlier vibe)
+        color: "#F59E0B", // amber-500: energetic, attention-grabbing
     },
 ];
 
+
 notifications = Array.from({ length: 10 }, () => notifications).flat();
 
-const Notification = ({ name, description, icon, color, time }: Item) => {
+const Notification = ({ name, description, icon, color }: Item) => {
     return (
         <figure
             className={cn(
@@ -71,7 +66,6 @@ const Notification = ({ name, description, icon, color, time }: Item) => {
                     <figcaption className="flex flex-row items-center whitespace-pre text-lg font-medium dark:text-white ">
                         <span className="text-sm sm:text-lg">{name}</span>
                         <span className="mx-1">·</span>
-                        <span className="text-xs text-gray-500">{time}</span>
                     </figcaption>
                     <p className="text-sm font-normal dark:text-white/60">
                         {description}

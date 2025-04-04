@@ -7,7 +7,6 @@ import {
     FolderIcon,
     HelpCircleIcon,
     BrainCircuitIcon,
-    SparklesIcon,
     ActivityIcon,
     CompassIcon
 } from "lucide-react";
@@ -48,11 +47,11 @@ const data = {
             view: "projects" as const,
             icon: FolderIcon,
         },
-        {
+        /*{
             title: "Ask Med.ai",
             view: "askMedAI" as const,
             icon: SparklesIcon,
-        },
+        },*/
         {
             title: "Take A Tour",
             view: "takeatour" as const,

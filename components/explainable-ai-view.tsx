@@ -1,9 +1,11 @@
 "use client";
 
-import { TextIcon, InfoIcon } from "lucide-react";
+import { TextIcon, SparklesIcon, Copy } from "lucide-react";
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import React from "react";
+import React, { useState } from "react";
+import { Button } from "@/components/ui/button"
+import {ScrollArea} from "@/components/ui/scroll-area";
 
 interface ExplainableAIPanelProps {
     isLoading: boolean;
@@ -11,12 +13,20 @@ interface ExplainableAIPanelProps {
 }
 
 export function ExplainableAIPanel({ isLoading, modelresponse }: ExplainableAIPanelProps) {
+    const [copied, setCopied] = useState(false);
+
+    const handleCopy = () => {
+        if (!modelresponse) return;
+        navigator.clipboard.writeText(modelresponse);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 1500);
+    };
     if (isLoading && !modelresponse) {
         return (
             <Card className="h-auto flex flex-col justify-between ml-5 mt-5">
                 <CardHeader>
                     <CardTitle className="flex items-center">
-                        <InfoIcon className="mr-2 h-5 w-5 text-blue-700" />
+                        <SparklesIcon className="mr-2 h-5 w-5 text-blue-700" />
                         What MedAI has to say:
                     </CardTitle>
                 </CardHeader>
@@ -38,7 +48,7 @@ export function ExplainableAIPanel({ isLoading, modelresponse }: ExplainableAIPa
                             target="_blank"
                             rel="noopener noreferrer"
                         >
-                            <InfoIcon className="mr-2 h-5 w-5 text-blue-700 hover:text-zinc-900" />
+                            <SparklesIcon className="mr-2 h-5 w-5 text-blue-700 hover:text-zinc-900" />
                         </a>
                         What MedAI has to say:
                     </CardTitle>
@@ -62,12 +72,39 @@ export function ExplainableAIPanel({ isLoading, modelresponse }: ExplainableAIPa
         <Card className="h-auto flex flex-col justify-between ml-5 mt-5">
             <CardHeader>
                 <CardTitle className="flex items-center">
-                    <InfoIcon className="mr-2 h-5 w-5 text-blue-700" />
+                    <SparklesIcon className="mr-2 h-5 w-5 text-blue-700" />
                     What MedAI has to say:
                 </CardTitle>
             </CardHeader>
+
             <CardContent className="flex flex-col items-start justify-center px-4 gap-2 h-full">
-                <p className="text-sm text-muted-foreground">{modelresponse}</p>
+                <Card className="bg-zinc-50 rounded-md shadow-sm w-full relative max-h-[200px]">
+                    {/* 📋 Copy Button */}
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        className="absolute top-2 right-2 h-6 w-6 text-gray-500 hover:text-black"
+                        onClick={handleCopy}
+                    >
+                        <Copy className="h-4 w-4" />
+                    </Button>
+
+                    {/* 🧠 Scrollable Text */}
+                    <CardContent className="h-full px-2 pt-4 pb-2">
+                        <ScrollArea className="h-[150px] w-full pr-2">
+                            <p className="text-sm text-muted-foreground whitespace-pre-wrap">
+                                {modelresponse}
+                            </p>
+                        </ScrollArea>
+                    </CardContent>
+                </Card>
+
+                {/* ✅ Copied feedback */}
+                {copied && (
+                    <span className="text-xs text-green-600 animate-pulse ml-1 mt-1">
+                        Copied to clipboard!
+                    </span>
+                )}
             </CardContent>
         </Card>
     );

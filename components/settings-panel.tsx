@@ -42,7 +42,7 @@ const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
 export function SettingsPanel({ onAnalysisDone, setIsLoading, isLoading}: SettingsPanelProps) {
     const [currentStep, setCurrentStep] = useState(1);
     const [algo, setAlgo] = useState<"kmeans" | "agglomerative" | "dbscan" | "auto">(
-        "auto"
+        "kmeans"
     );
     const [files, setFiles] = useState<File[]>([]);
     const [dragActive, setDragActive] = useState(false);
@@ -238,21 +238,42 @@ export function SettingsPanel({ onAnalysisDone, setIsLoading, isLoading}: Settin
                             Drag & Drop your file here.
                         </p>
                         <p className="text-center text-xs text-muted-foreground">
-                            (Accepted formats: CSV, Excel, or TXT)
+                            (Accepted format: Series Matrix File TXT)
                         </p>
                         <input
                             type="file"
                             multiple
-                            accept=".csv,.xls,.xlsx,.txt"
+                            accept=".txt"
                             className="hidden"
                             ref={fileInputRef}
                             onChange={handleFileUpload}
                         />
                     </div>
 
-                    <Button size="sm" onClick={triggerFileSelect} className="cursor-pointer">
-                        Select a file
+                    <div className="flex gap-2">
+                    <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={async () => {
+                            try {
+                                const response = await fetch("/example/GSE8599_series_matrix.txt");
+                                const text = await response.text();
+                                const blob = new Blob([text], { type: "text/plain" });
+                                const file = new File([blob], "GSE8599_series_matrix.txt", { type: "text/plain" });
+                                setFiles([file]);
+                            } catch (error) {
+                                alert("Failed to load example file.");
+                                console.error(error);
+                            }
+                        }}
+                        className="cursor-pointer"
+                    >
+                        Use Example File
                     </Button>
+                        <Button size="sm" onClick={triggerFileSelect} className="cursor-pointer">
+                            Select a file
+                        </Button>
+                    </div>
 
                     {files.length > 0 && (
                         <div className="w-full">
@@ -303,7 +324,7 @@ export function SettingsPanel({ onAnalysisDone, setIsLoading, isLoading}: Settin
                                         <SelectItem value="kmeans">K-Means</SelectItem>
                                         <SelectItem value="agglomerative">Agglomerative</SelectItem>
                                         <SelectItem value="dbscan">DBSCAN</SelectItem>
-                                        <SelectItem value="auto">MedAI takes care of it</SelectItem>
+                                        {/* <SelectItem value="auto">MedAI takes care of it</SelectItem> */}
                                     </SelectContent>
                                 </Select>
                             </div>
