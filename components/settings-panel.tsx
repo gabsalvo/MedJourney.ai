@@ -251,25 +251,28 @@ export function SettingsPanel({ onAnalysisDone, setIsLoading, isLoading}: Settin
                     </div>
 
                     <div className="flex gap-2">
-                    <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={async () => {
-                            try {
-                                const response = await fetch("/example/GSE8599_series_matrix.txt");
-                                const text = await response.text();
-                                const blob = new Blob([text], { type: "text/plain" });
-                                const file = new File([blob], "GSE8599_series_matrix.txt", { type: "text/plain" });
-                                setFiles([file]);
-                            } catch (error) {
-                                alert("Failed to load example file.");
-                                console.error(error);
-                            }
-                        }}
-                        className="cursor-pointer"
-                    >
-                        Use Example File
-                    </Button>
+                        <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={async () => {
+                                try {
+                                    const response = await fetch("/GSE8599_series_matrix.txt");
+                                    const blob = await response.blob(); // <-- non usare .text()
+                                    const file = new File([blob], "GSE8599_series_matrix.txt", {
+                                        type: "text/plain",
+                                        lastModified: new Date().getTime(),
+                                    });
+                                    console.log("Loaded example file:", file.name, file.size, file.type);
+                                    setFiles([file]);
+                                    setProjectName("Example GSE8599"); // Optional: auto-fill name
+                                } catch (error) {
+                                    alert("Failed to load example file.");
+                                    console.error(error);
+                                }
+                            }}
+                        >
+                            Use Example File
+                        </Button>
                         <Button size="sm" onClick={triggerFileSelect} className="cursor-pointer">
                             Select a file
                         </Button>
