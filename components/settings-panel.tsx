@@ -200,6 +200,18 @@ export function SettingsPanel({ onAnalysisDone, setIsLoading, isLoading}: Settin
         fileInputRef.current?.click();
     }
 
+    function resetState() {
+        setCurrentStep(1);
+        setAlgo("auto");
+        setFiles([]);
+        setClusterCount(3);
+        setMaxIter(300);
+        setLinkage("single");
+        setEpsilon(0.5);
+        setMinSamples(5);
+        setProjectName("");
+    }
+
     return (
         <>
             {/* UPLOAD SECTION */}
@@ -422,14 +434,15 @@ export function SettingsPanel({ onAnalysisDone, setIsLoading, isLoading}: Settin
                                     Back
                                 </Button>
                             )}
+                            <Button onClick={resetState} variant="outline" className="cursor-pointer ml-auto">Reset</Button>
                             {currentStep < (algo === "auto" ? 2 : 3) ? (
-                                <Button onClick={handleNext} className="cursor-pointer">
+                                <Button onClick={handleNext} className="cursor-pointer ml-2">
                                     Next
                                 </Button>
                             ) : (
                                 <Button
                                     onClick={startAnalysis}
-                                    className="cursor-pointer bg-blue-700 hover:bg-blue-500"
+                                    className="cursor-pointer bg-blue-700 hover:bg-blue-500 ml-2"
                                     disabled={isLoading}
                                 >{isLoading ? "Analysing..." : "Start Analysis"}
                                 </Button>
