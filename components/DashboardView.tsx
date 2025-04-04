@@ -63,14 +63,14 @@ export function Dashboard() {
                     <ResizablePanelGroup direction="vertical" >
                         {/* Top: Results */}
                         <ResizablePanel defaultSize={63} minSize={20} maxSize={100} className="border-b border-gray-300">
-                            <ResultsPanel clusters={clustersData} manifest={manifestData} isLoading={isLoading}/>
+                            <ResultsPanel clusters={clustersData} isLoading={isLoading}/>
                         </ResizablePanel>
 
                         <ResizableHandle withHandle />
 
                         {/* Bottom: Explainable AI */}
                         <ResizablePanel defaultSize={30} minSize={10} maxSize={100}>
-                            <ExplainableAIPanel xai={xaiData} isLoading={isLoading}/>
+                            <ExplainableAIPanel xai={xaiData} clusters={clustersData} manifest={manifestData} isLoading={isLoading}/>
                         </ResizablePanel>
                     </ResizablePanelGroup>
                 </ResizablePanel>
@@ -83,10 +83,10 @@ export function Dashboard() {
             <SettingsPanel onAnalysisDone={handleAnalysisDone} setIsLoading={setIsLoading} isLoading={isLoading}/>
         </div>
         <div>
-            <ResultsPanel clusters={clustersData} manifest={manifestData} isLoading={isLoading}/>
+            <ResultsPanel clusters={clustersData} isLoading={isLoading}/>
         </div>
         <div>
-            <ExplainableAIPanel  xai={xaiData} isLoading={isLoading}/>
+            <ExplainableAIPanel  xai={xaiData} clusters={clustersData} manifest={manifestData} isLoading={isLoading}/>
         </div>
     </div>
 </>

@@ -9,7 +9,6 @@ import {ClusteringChart} from "@/components/ClusteringCharts";
 
 interface ResultsPanelProps {
     clusters: unknown;
-    manifest: unknown;
     isLoading: boolean;
 }
 
@@ -26,8 +25,7 @@ function isValidClusterData(data: unknown): data is { points: ClusterPoint[] } {
     );
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function ResultsPanel({ clusters, manifest, isLoading }: ResultsPanelProps) {
+export function ResultsPanel({ clusters, isLoading }: ResultsPanelProps) {
     if (isLoading) {
         return (
             <Card className="h-[450px] flex flex-col ml-5">

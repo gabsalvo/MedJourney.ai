@@ -7,10 +7,13 @@ import React from "react";
 
 interface ExplainableAIPanelProps {
     xai: unknown;
+    clusters: unknown;
+    manifest: unknown;
     isLoading: boolean;
 }
 
-export function ExplainableAIPanel({ xai, isLoading }: ExplainableAIPanelProps) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function ExplainableAIPanel({ xai, clusters, manifest, isLoading }: ExplainableAIPanelProps) {
     if (isLoading) {
         return (
             <Card className="h-[175px] flex flex-col justify-between ml-5 mt-5">

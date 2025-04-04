@@ -96,7 +96,7 @@ export function QuickCreateDialog({ open, onOpenChange }: UploadDialogProps) {
             const data = await res.json();
             if (data?.report_zip_path) {
                 setDownloadLink(
-                    `http://localhost:8000/api/download-proxy?user_id=${data.user_id}&project_name=${data.project_name}`
+                    `${API_BASE}/download-proxy?user_id=${data.user_id}&project_name=${data.project_name}`
                 );
             }
         } catch (err) {
