@@ -30,6 +30,7 @@ interface UploadDialogProps {
     open: boolean;
     onOpenChange: (value: boolean) => void;
 }
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export function QuickCreateDialog({ open, onOpenChange }: UploadDialogProps) {
     const [files, setFiles] = useState<File[]>([]);
@@ -87,7 +88,7 @@ export function QuickCreateDialog({ open, onOpenChange }: UploadDialogProps) {
 
         try {
             setLoading(true);
-            const res = await fetch("http://localhost:8000/api/clustering/clustering", {
+            const res = await fetch(`${API_BASE}/clustering/clustering`, {
                 method: "POST",
                 body: formData,
             });

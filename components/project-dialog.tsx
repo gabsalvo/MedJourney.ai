@@ -30,6 +30,7 @@ type ProjectDialogProps = {
     userId: string;
     projectName: string;
 };
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export function ProjectDialog({
                                   open,
@@ -45,7 +46,7 @@ export function ProjectDialog({
         if (!open) return;
         setLoading(true);
         fetch(
-            `http://127.0.0.1:8000/api/project-info?user_id=${encodeURIComponent(
+            `${API_BASE}/project-info?user_id=${encodeURIComponent(
                 userId
             )}&project_name=${encodeURIComponent(projectName)}`
         )

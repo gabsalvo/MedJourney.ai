@@ -62,14 +62,14 @@ export function Dashboard() {
                 <ResizablePanel defaultSize={70} minSize={20}>
                     <ResizablePanelGroup direction="vertical" >
                         {/* Top: Results */}
-                        <ResizablePanel defaultSize={63} minSize={20} className="border-b border-gray-300">
+                        <ResizablePanel defaultSize={63} minSize={20} maxSize={100} className="border-b border-gray-300">
                             <ResultsPanel clusters={clustersData} manifest={manifestData} isLoading={isLoading}/>
                         </ResizablePanel>
 
                         <ResizableHandle withHandle />
 
                         {/* Bottom: Explainable AI */}
-                        <ResizablePanel defaultSize={30} minSize={10}>
+                        <ResizablePanel defaultSize={30} minSize={10} maxSize={100}>
                             <ExplainableAIPanel xai={xaiData} isLoading={isLoading}/>
                         </ResizablePanel>
                     </ResizablePanelGroup>

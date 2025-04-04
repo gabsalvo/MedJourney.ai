@@ -46,6 +46,9 @@ type ViewType =
 interface ProjectsViewProps {
     setCurrentView: (view: ViewType) => void;
 }
+
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 export function ProjectsView({ setCurrentView }: ProjectsViewProps) {
     const [search, setSearch] = useState("");
     const [projects, setProjects] = useState<Project[]>([]);
@@ -78,7 +81,7 @@ export function ProjectsView({ setCurrentView }: ProjectsViewProps) {
         if (!userId) return;
         console.log("🔐 User ID Supabase:", userId);
 
-        const endpoint = `http://127.0.0.1:8000/api/projects?user_id=${userId}`;
+        const endpoint = `${API_BASE}/projects?user_id=${userId}`;
         fetch(endpoint)
             .then(async (res) => {
                 if (!res.ok) {

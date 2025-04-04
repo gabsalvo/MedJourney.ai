@@ -37,6 +37,8 @@ interface SettingsPanelProps {
     isLoading: boolean;
 }
 
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 export function SettingsPanel({ onAnalysisDone, setIsLoading, isLoading}: SettingsPanelProps) {
     const [currentStep, setCurrentStep] = useState(1);
     const [algo, setAlgo] = useState<"kmeans" | "agglomerative" | "dbscan" | "auto">(
@@ -116,7 +118,7 @@ export function SettingsPanel({ onAnalysisDone, setIsLoading, isLoading}: Settin
 
             // 5) Chiamata API
             const response = await fetch(
-                "http://localhost:8000/api/clustering/clustering",
+                `${API_BASE}/clustering/clustering`,
                 {
                     method: "POST",
                     body: formData,
