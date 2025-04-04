@@ -6,21 +6,18 @@ import { Skeleton } from "@/components/ui/skeleton";
 import React from "react";
 
 interface ExplainableAIPanelProps {
-    xai: unknown;
-    clusters: unknown;
-    manifest: unknown;
     isLoading: boolean;
+    modelresponse: string | null;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function ExplainableAIPanel({ xai, clusters, manifest, isLoading }: ExplainableAIPanelProps) {
-    if (isLoading) {
+export function ExplainableAIPanel({ isLoading, modelresponse }: ExplainableAIPanelProps) {
+    if (isLoading && !modelresponse) {
         return (
-            <Card className="h-[175px] flex flex-col justify-between ml-5 mt-5">
+            <Card className="h-auto flex flex-col justify-between ml-5 mt-5">
                 <CardHeader>
                     <CardTitle className="flex items-center">
                         <InfoIcon className="mr-2 h-5 w-5 text-blue-700" />
-                        Explainable AI
+                        What MedAI has to say:
                     </CardTitle>
                 </CardHeader>
                 <CardContent className="flex flex-col items-center justify-center gap-4 h-full">
@@ -31,9 +28,9 @@ export function ExplainableAIPanel({ xai, clusters, manifest, isLoading }: Expla
         );
     }
 
-    if (!xai) {
+    if (!modelresponse) {
         return (
-            <Card className="h-[175px] flex flex-col justify-between ml-5 mt-5">
+            <Card className="h-auto flex flex-col justify-between ml-5 mt-5">
                 <CardHeader>
                     <CardTitle className="flex items-center">
                         <a
@@ -43,7 +40,7 @@ export function ExplainableAIPanel({ xai, clusters, manifest, isLoading }: Expla
                         >
                             <InfoIcon className="mr-2 h-5 w-5 text-blue-700 hover:text-zinc-900" />
                         </a>
-                        Explainable AI
+                        What MedAI has to say:
                     </CardTitle>
                 </CardHeader>
                 <CardContent className="flex flex-col items-center justify-center gap-4 h-full">
@@ -62,20 +59,15 @@ export function ExplainableAIPanel({ xai, clusters, manifest, isLoading }: Expla
 
     // ✅ Data present → show insights
     return (
-        <Card className="h-[175px] flex flex-col justify-between ml-5 mt-5">
+        <Card className="h-auto flex flex-col justify-between ml-5 mt-5">
             <CardHeader>
                 <CardTitle className="flex items-center">
                     <InfoIcon className="mr-2 h-5 w-5 text-blue-700" />
-                    Explainable AI
+                    What MedAI has to say:
                 </CardTitle>
             </CardHeader>
             <CardContent className="flex flex-col items-start justify-center px-4 gap-2 h-full">
-                {/* Qui visualizzeremo le informazioni XAI */}
-                <p className="text-sm text-muted-foreground">
-                    {typeof xai === "string"
-                        ? xai
-                        : "Explainable AI data loaded. Implement rendering logic here."}
-                </p>
+                <p className="text-sm text-muted-foreground">{modelresponse}</p>
             </CardContent>
         </Card>
     );

@@ -11,12 +11,21 @@ import { TipsPanel } from "@/components/tips-panel";
 import { SettingsPanel } from "@/components/settings-panel";
 import { ResultsPanel } from "@/components/results-panel";
 import { ExplainableAIPanel } from "@/components/explainable-ai-view";
+import {buildPrompt} from "@/lib/buildprompt";
+
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 
 export function Dashboard() {
     const [clustersData, setClustersData] = useState<unknown>(null);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [manifestData, setManifestData] = useState<unknown>(null);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [xaiData, setXaiData] = useState<unknown>(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [isEngineLoading, setIsEngineLoading] = useState(false);
+    const [interpretation, setInterpretation] = useState<string | null>(null);
+
 
     // 2. Callback chiamata da SettingsPanel a fine analisi
     const handleAnalysisDone = (
@@ -27,6 +36,25 @@ export function Dashboard() {
         setClustersData(clusters);
         setManifestData(manifest);
         setXaiData(xai);
+        const fetchLLMInterpretation = async () => {
+            setIsEngineLoading(true);
+            try {
+                const res = await fetch(`${API_BASE}/interpret`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ prompt: buildPrompt({manifest, clusters, xai})}),
+                });
+                const data = await res.json();
+                setInterpretation(data.interpretation || "✅ LLM responded, but gave no interpretation.");
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            } catch (err) {
+                setInterpretation("❌ Error calling LLM API.");
+            } finally {
+                setIsEngineLoading(false);
+            }
+        };
+
+        fetchLLMInterpretation();
     };
 
     return (
@@ -70,7 +98,7 @@ export function Dashboard() {
 
                         {/* Bottom: Explainable AI */}
                         <ResizablePanel defaultSize={30} minSize={10} maxSize={100}>
-                            <ExplainableAIPanel xai={xaiData} clusters={clustersData} manifest={manifestData} isLoading={isLoading}/>
+                            <ExplainableAIPanel isLoading={isLoading || isEngineLoading} modelresponse={interpretation}/>
                         </ResizablePanel>
                     </ResizablePanelGroup>
                 </ResizablePanel>
@@ -86,7 +114,7 @@ export function Dashboard() {
             <ResultsPanel clusters={clustersData} isLoading={isLoading}/>
         </div>
         <div>
-            <ExplainableAIPanel  xai={xaiData} clusters={clustersData} manifest={manifestData} isLoading={isLoading}/>
+            <ExplainableAIPanel isLoading={isLoading || isEngineLoading} modelresponse={interpretation}/>
         </div>
     </div>
 </>
