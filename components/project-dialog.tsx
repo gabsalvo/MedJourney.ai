@@ -123,7 +123,7 @@ export function ProjectDialog({
                                 <Button
                                     variant="outline"
                                     onClick={() => {
-                                        const proxyURL = `http://localhost:8000/api/download-proxy?user_id=${userId}&project_name=${projectName}`;
+                                        const proxyURL = `${API_BASE}/download-proxy?user_id=${userId}&project_name=${projectName}`;
                                         window.open(proxyURL, "_blank");
                                     }}
                                 >
