@@ -6,6 +6,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button"
 import {ScrollArea} from "@/components/ui/scroll-area";
+import ReactMarkdown from "react-markdown";
+
 
 interface ExplainableAIPanelProps {
     isLoading: boolean;
@@ -88,15 +90,48 @@ export function ExplainableAIPanel({ isLoading, modelresponse }: ExplainableAIPa
                     >
                         <Copy className="h-4 w-4" />
                     </Button>
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        className="absolute top-2 right-10 h-6 w-6 text-gray-500 hover:text-black"
+                        onClick={() => {
+                            if (!modelresponse) return;
+                            const blob = new Blob([modelresponse], { type: "text/markdown" });
+                            const url = URL.createObjectURL(blob);
+                            const a = document.createElement("a");
+                            a.href = url;
+                            a.download = "medai_analysis.md";
+                            a.click();
+                            URL.revokeObjectURL(url);
+                        }}
+                    >
+                        <TextIcon className="h-4 w-4" />
+                    </Button>
+
 
                     {/* 🧠 Scrollable Text */}
                     <CardContent className="h-full px-2 pt-4 pb-2">
-                        <ScrollArea className="h-[150px] w-full pr-2">
-                            <p className="text-sm text-muted-foreground whitespace-pre-wrap">
-                                {modelresponse}
-                            </p>
+                        <ScrollArea className="h-[150px] w-full pr-2 rounded-md border bg-white">
+                            <div className="prose prose-sm max-w-none text-gray-700 dark:text-gray-200 px-4 py-2">
+                                <ReactMarkdown
+                                    components={{
+                                        h1: (props) => <h1 className="text-xl font-bold mt-4 mb-2 text-zinc-800" {...props} />,
+                                        h2: (props) => <h2 className="text-lg font-semibold mt-4 mb-2 text-zinc-700" {...props} />,
+                                        p: (props) => <p className="mb-2 leading-relaxed" {...props} />,
+                                        ul: (props) => <ul className="list-disc ml-5 mb-2" {...props} />,
+                                        ol: (props) => <ol className="list-decimal ml-5 mb-2" {...props} />,
+                                        li: (props) => <li className="mb-1" {...props} />,
+                                        strong: (props) => <strong className="font-semibold text-black" {...props} />,
+                                        em: (props) => <em className="italic text-zinc-600" {...props} />,
+                                        code: (props) => <code className="bg-zinc-100 px-1 py-0.5 rounded text-sm" {...props} />,
+                                    }}
+                                >
+                                    {modelresponse || ""}
+                                </ReactMarkdown>
+                            </div>
                         </ScrollArea>
                     </CardContent>
+
                 </Card>
 
                 {/* ✅ Copied feedback */}
