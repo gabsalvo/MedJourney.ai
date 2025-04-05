@@ -25,24 +25,28 @@ export function Dashboard() {
     const [isLoading, setIsLoading] = useState(false);
     const [isEngineLoading, setIsEngineLoading] = useState(false);
     const [interpretation, setInterpretation] = useState<string | null>(null);
+    const [labelsData, setLabelsData] = useState<Record<string, string> | null>(null);
+
 
 
     // 2. Callback chiamata da SettingsPanel a fine analisi
     const handleAnalysisDone = (
         clusters: unknown,
         manifest: unknown,
-        xai: unknown
+        xai: unknown,
+        labels: Record<string, string>
     ) => {
         setClustersData(clusters);
         setManifestData(manifest);
         setXaiData(xai);
+        setLabelsData(labels);
         const fetchLLMInterpretation = async () => {
             setIsEngineLoading(true);
             try {
                 const res = await fetch(`${API_BASE}/interpret`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ prompt: buildPrompt({manifest, clusters, xai})}),
+                    body: JSON.stringify({ prompt: buildPrompt({manifest, clusters, xai, labels: labelsData })}),
                 });
                 const data = await res.json();
                 setInterpretation(data.interpretation || "✅ LLM responded, but gave no interpretation.");

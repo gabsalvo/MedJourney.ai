@@ -2,14 +2,29 @@ export function buildPrompt({
                                 manifest,
                                 clusters,
                                 xai,
+                                labels,
                             }: {
     manifest: unknown;
     clusters: unknown;
     xai: unknown;
+    labels?: Record<string, string> | null; // ✅ fixed typo here
 }): string {
     const manifestStr = JSON.stringify(manifest, null, 2);
     const clustersStr = JSON.stringify(clusters, null, 2);
     const xaiStr = JSON.stringify(xai, null, 2);
+
+    let labelsSection = "";
+
+    if (labels && Object.keys(labels).length > 0) {
+        const formatted = Object.entries(labels)
+            .map(([sample, group]) => `- ${sample}: ${group}`)
+            .join("\n");
+
+        labelsSection = `
+🧾 Original biological labels (ground truth):
+${formatted}
+`;
+    }
 
     return `
 You are MedAI, an expert biomedical assistant specialized in bioinformatics and omics data analysis.
@@ -26,6 +41,7 @@ ${clustersStr}
 
 🧠 Explainable AI insights (optional):
 ${xaiStr}
+${labelsSection}
 
 ---
 

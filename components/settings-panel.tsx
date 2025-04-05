@@ -31,7 +31,8 @@ interface SettingsPanelProps {
     onAnalysisDone: (
         clusters: unknown,
         manifest: unknown,
-        xai: unknown
+        xai: unknown,
+        labels: Record<string, string>
     ) => void;
     setIsLoading: (value: boolean) => void
     isLoading: boolean;
@@ -134,9 +135,9 @@ export function SettingsPanel({ onAnalysisDone, setIsLoading, isLoading}: Settin
             const data = await response.json();
             console.log("✅ Clustering completato:", data);
 
-            const { clusters, manifest, xai } = data.frontend_data;
+            const { clusters, manifest, xai, labels } = data.frontend_data;
             // CHIAMA LA CALLBACK
-            onAnalysisDone(clusters, manifest, xai);
+            onAnalysisDone(clusters, manifest, xai, labels);
 
         } catch (err) {
             console.error("Errore durante l’analisi:", err);
