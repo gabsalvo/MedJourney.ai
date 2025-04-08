@@ -17,11 +17,29 @@ const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 )
 
+type ViewType =
+    | "dashboard"
+    | "projects"
+    | "askMedAI"
+    | "dataLibrary"
+    | "reports"
+    | "settings"
+    | "takeatour"
+
 export default function Page() {
     const router = useRouter()
-    const [activeView, setActiveView] = useState<
-        "dashboard" | "projects" | "askMedAI" | "dataLibrary" | "reports" | "settings" | "takeatour"
-    >("takeatour")
+    const [activeView, setActiveView] = useState<ViewType>(() => {
+        if (typeof window !== "undefined") {
+            const stored = localStorage.getItem("activeView") as ViewType | null
+            return stored ?? "takeatour"
+        }
+        return "takeatour"
+    })
+
+    const handleSetView = (view: ViewType) => {
+        localStorage.setItem("activeView", view)
+        setActiveView(view)
+    }
 
     const [isLoading, setIsLoading] = useState(true)
     const [isLoggedIn, setIsLoggedIn] = useState(false)
@@ -62,16 +80,16 @@ export default function Page() {
 
     return (
         <SidebarProvider>
-            <AppSidebar setActiveView={setActiveView} />
+            <AppSidebar setActiveView={handleSetView} />
             <SidebarInset>
                 <SiteHeader />
                 <div className="flex flex-1 flex-col p-6">
                     {activeView === "dashboard" && (
                         <>
-                            <Dashboard />
+                            <Dashboard setActiveView={handleSetView}/>
                         </>
                     )}
-                    {activeView === "projects" && <ProjectsView setCurrentView={setActiveView} />}
+                    {activeView === "projects" && <ProjectsView setCurrentView={handleSetView} />}
                     {activeView === "askMedAI" && <AskMedAIView />}
                     {activeView === "takeatour" && <TakeATourView setActiveView={setActiveView} />}
                 </div>

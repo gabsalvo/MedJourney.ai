@@ -15,8 +15,13 @@ import {buildPrompt} from "@/lib/buildprompt";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
 
+type ViewType = "dashboard" | "projects" | "askMedAI" | "dataLibrary" | "reports" | "settings" | "takeatour";
 
-export function Dashboard() {
+interface DashboardProps {
+    setActiveView: (view: ViewType) => void;
+}
+
+export function Dashboard({ setActiveView }: DashboardProps) {
     const [clustersData, setClustersData] = useState<unknown>(null);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [manifestData, setManifestData] = useState<unknown>(null);
@@ -26,6 +31,7 @@ export function Dashboard() {
     const [isEngineLoading, setIsEngineLoading] = useState(false);
     const [interpretation, setInterpretation] = useState<string | null>(null);
     const [labelsData, setLabelsData] = useState<Record<string, string> | null>(null);
+
 
 
 
@@ -75,15 +81,15 @@ export function Dashboard() {
                 <ResizablePanel
                     defaultSize={40}
                     minSize={20}
-                    maxSize={80}
+                    maxSize={100}
                     className="border-r border-gray-300 mb-[-300px]"
                 >
-                    <div className="flex flex-col h-[750px]">
+                    <div className="flex flex-col h-full">
                         {/*<div className="flex-1">
                             <UploadPanel />
                         </div>*/}
                         <div className="flex-1">
-                            <SettingsPanel onAnalysisDone={handleAnalysisDone} setIsLoading={setIsLoading} isLoading={isLoading}/>
+                            <SettingsPanel onAnalysisDone={handleAnalysisDone} setIsLoading={setIsLoading} isLoading={isLoading} setCurrentView={setActiveView}/>
                         </div>
                     </div>
                 </ResizablePanel>
@@ -112,7 +118,7 @@ export function Dashboard() {
     <div className="flex md:hidden flex-col h-screen overflow-y-auto p-4 space-y-4">
         {/* On mobile, omit TipsPanel */}
         <div>
-            <SettingsPanel onAnalysisDone={handleAnalysisDone} setIsLoading={setIsLoading} isLoading={isLoading}/>
+            <SettingsPanel onAnalysisDone={handleAnalysisDone} setIsLoading={setIsLoading} isLoading={isLoading} setCurrentView={setActiveView}/>
         </div>
         <div>
             <ResultsPanel clusters={clustersData} isLoading={isLoading}/>

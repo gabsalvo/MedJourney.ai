@@ -27,6 +27,15 @@ const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
+type ViewType =
+    | "dashboard"
+    | "projects"
+    | "askMedAI"
+    | "dataLibrary"
+    | "reports"
+    | "settings"
+    | "takeatour";
+
 interface SettingsPanelProps {
     onAnalysisDone: (
         clusters: unknown,
@@ -36,6 +45,7 @@ interface SettingsPanelProps {
     ) => void;
     setIsLoading: (value: boolean) => void
     isLoading: boolean;
+    setCurrentView: (view: ViewType) => void;
 }
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -201,16 +211,14 @@ export function SettingsPanel({ onAnalysisDone, setIsLoading, isLoading}: Settin
         fileInputRef.current?.click();
     }
 
-    function resetState() {
+    function restartAnalysisState() {
         setCurrentStep(1);
         setAlgo("auto");
-        setFiles([]);
         setClusterCount(3);
         setMaxIter(300);
         setLinkage("single");
         setEpsilon(0.5);
         setMinSamples(5);
-        setProjectName("");
     }
 
     return (
@@ -252,6 +260,16 @@ export function SettingsPanel({ onAnalysisDone, setIsLoading, isLoading}: Settin
                     </div>
 
                     <div className="flex gap-2">
+                        <Button
+                            onClick={() => {
+                                localStorage.setItem("activeView", "dashboard");
+                                window.location.reload();
+                            }}
+                            variant="destructive"
+                            className="cursor-pointer ml-auto"
+                        >
+                            Reset
+                        </Button>
                         <Button
                             size="sm"
                             variant="outline"
@@ -459,7 +477,7 @@ export function SettingsPanel({ onAnalysisDone, setIsLoading, isLoading}: Settin
                                     Back
                                 </Button>
                             )}
-                            <Button onClick={resetState} variant="outline" className="cursor-pointer ml-auto">Reset</Button>
+                            <Button onClick={restartAnalysisState} variant="outline" className="cursor-pointer ml-auto">Restart Analysis</Button>
                             {currentStep < (algo === "auto" ? 2 : 3) ? (
                                 <Button onClick={handleNext} className="cursor-pointer ml-2">
                                     Next

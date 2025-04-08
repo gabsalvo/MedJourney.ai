@@ -7,6 +7,11 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button"
 import {ScrollArea} from "@/components/ui/scroll-area";
 import ReactMarkdown from "react-markdown";
+import {
+    ResizableHandle,
+    ResizablePanel,
+    ResizablePanelGroup,
+} from "@/components/ui/resizable"
 
 
 interface ExplainableAIPanelProps {
@@ -80,7 +85,7 @@ export function ExplainableAIPanel({ isLoading, modelresponse }: ExplainableAIPa
             </CardHeader>
 
             <CardContent className="flex flex-col items-start justify-center px-4 gap-2 h-full">
-                <Card className="bg-zinc-50 rounded-md shadow-sm w-full relative max-h-[200px]">
+                <Card className="bg-zinc-50 rounded-md shadow-sm w-full relative ">
                     {/* 📋 Copy Button */}
                     <Button
                         variant="ghost"
@@ -111,8 +116,8 @@ export function ExplainableAIPanel({ isLoading, modelresponse }: ExplainableAIPa
 
                     {/* 🧠 Scrollable Text */}
                     <CardContent className="h-full px-2 pt-4 pb-2">
-                        <ScrollArea className="h-[150px] w-full pr-2 rounded-md border bg-white">
-                            <div className="prose prose-sm max-w-none text-gray-700 dark:text-gray-200 px-4 py-2">
+                        <ScrollArea className="max-h-[400px] w-full pr-2 rounded-md border bg-white overflow-y-auto">
+                        <div className="prose prose-sm max-w-none text-gray-700 dark:text-gray-200 px-4 py-2">
                                 <ReactMarkdown
                                     components={{
                                         h1: (props) => <h1 className="text-xl font-bold mt-4 mb-2 text-zinc-800" {...props} />,
