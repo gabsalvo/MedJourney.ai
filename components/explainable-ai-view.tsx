@@ -1,6 +1,6 @@
 "use client";
 
-import { TextIcon, SparklesIcon, Copy } from "lucide-react";
+import { TextIcon, SparklesIcon, Copy, BookDashed } from "lucide-react";
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import React, { useState } from "react";
@@ -12,9 +12,10 @@ import ReactMarkdown from "react-markdown";
 interface ExplainableAIPanelProps {
     isLoading: boolean;
     modelresponse: string | null;
+    setModelresponse: (val: string | null) => void;
 }
 
-export function ExplainableAIPanel({ isLoading, modelresponse }: ExplainableAIPanelProps) {
+export function ExplainableAIPanel({ isLoading, modelresponse, setModelresponse }: ExplainableAIPanelProps) {
     const [copied, setCopied] = useState(false);
 
     const handleCopy = () => {
@@ -107,7 +108,14 @@ export function ExplainableAIPanel({ isLoading, modelresponse }: ExplainableAIPa
                     >
                         <TextIcon className="h-4 w-4" />
                     </Button>
-
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        className="absolute top-2 right-18 h-6 w-6 text-gray-500 hover:text-black"
+                        onClick={() => setModelresponse(null)}
+                    >
+                     <BookDashed className="h-4 w-4" />
+                    </Button>
 
                     {/* 🧠 Scrollable Text */}
                     <CardContent className="h-full px-2 pt-4 pb-2">

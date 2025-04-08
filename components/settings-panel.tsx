@@ -82,13 +82,13 @@ export function SettingsPanel({ onAnalysisDone, setIsLoading, isLoading}: Settin
     function buildParams() {
         switch (algo) {
             case "kmeans":
-                return { clusterCount, maxIter };
+                return { n_clusters: clusterCount, max_iter: maxIter };
             case "agglomerative":
-                return { linkage };
+                return { n_clusters: clusterCount, linkage };
             case "dbscan":
-                return { epsilon, minSamples };
+                return { eps: epsilon, min_samples: minSamples };
             default:
-                return {}; // auto
+                return {};
         }
     }
 

@@ -101,14 +101,14 @@ export function Dashboard({ setActiveView }: DashboardProps) {
                     <ResizablePanelGroup direction="vertical" >
                         {/* Top: Results */}
                         <ResizablePanel defaultSize={63} minSize={20} maxSize={100} className="border-b border-gray-300">
-                            <ResultsPanel clusters={clustersData} isLoading={isLoading}/>
+                            <ResultsPanel clusters={clustersData} isLoading={isLoading} setClusters={setClustersData}/>
                         </ResizablePanel>
 
                         <ResizableHandle withHandle />
 
                         {/* Bottom: Explainable AI */}
                         <ResizablePanel defaultSize={30} minSize={10} maxSize={100}>
-                            <ExplainableAIPanel isLoading={isLoading || isEngineLoading} modelresponse={interpretation}/>
+                            <ExplainableAIPanel isLoading={isLoading || isEngineLoading} modelresponse={interpretation} setModelresponse={setInterpretation}/>
                         </ResizablePanel>
                     </ResizablePanelGroup>
                 </ResizablePanel>
@@ -121,10 +121,10 @@ export function Dashboard({ setActiveView }: DashboardProps) {
             <SettingsPanel onAnalysisDone={handleAnalysisDone} setIsLoading={setIsLoading} isLoading={isLoading} setCurrentView={setActiveView}/>
         </div>
         <div>
-            <ResultsPanel clusters={clustersData} isLoading={isLoading}/>
+            <ResultsPanel clusters={clustersData} isLoading={isLoading} setClusters={setClustersData}/>
         </div>
         <div>
-            <ExplainableAIPanel isLoading={isLoading || isEngineLoading} modelresponse={interpretation}/>
+            <ExplainableAIPanel isLoading={isLoading || isEngineLoading} modelresponse={interpretation} setModelresponse={setInterpretation}/>
         </div>
     </div>
 </>

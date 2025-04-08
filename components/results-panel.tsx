@@ -1,15 +1,18 @@
 "use client";
 
-import {BoxesIcon, ChartAreaIcon} from "lucide-react";
+import {BoxesIcon, ChartAreaIcon, BookDashed} from "lucide-react";
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import React from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import {ClusteringChart} from "@/components/ClusteringCharts";
+import { Button } from "@/components/ui/button"
+
 
 
 interface ResultsPanelProps {
     clusters: unknown;
     isLoading: boolean;
+    setClusters: (val: null) => void
 }
 
 type ClusterPoint = {
@@ -25,7 +28,7 @@ function isValidClusterData(data: unknown): data is { points: ClusterPoint[] } {
     );
 }
 
-export function ResultsPanel({ clusters, isLoading }: ResultsPanelProps) {
+export function ResultsPanel({ clusters, isLoading, setClusters }: ResultsPanelProps) {
     if (isLoading) {
         return (
             <Card className="h-[450px] flex flex-col ml-5">
@@ -77,11 +80,20 @@ export function ResultsPanel({ clusters, isLoading }: ResultsPanelProps) {
     if (isValidClusterData(clusters)) {
         return (
             <Card className="h-auto flex flex-col ml-5">
-                <CardHeader>
+                <CardHeader className="flex items-center justify-between">
                     <CardTitle className="flex items-center">
                         <BoxesIcon className="mr-2 h-5 w-5 text-blue-700" />
                         Clustering Results
                     </CardTitle>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        className="text-xs"
+                        onClick={() => setClusters(null)}
+                    >
+                        <BookDashed className="mr-2 h-4 w-4" />
+                        Clear
+                    </Button>
                 </CardHeader>
                 <CardContent className="flex flex-col justify-center items-center flex-grow">
                     <ClusteringChart points={clusters.points} />
