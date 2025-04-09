@@ -6,7 +6,6 @@ import { createClient } from "@supabase/supabase-js"
 import { Dashboard } from "@/components/DashboardView";
 import { AppSidebar } from "@/components/app-sidebar"
 import { ProjectsView } from "@/components/projects-view"
-import { AskMedAIView } from "@/components/ask-med-ai-view"
 import { TakeATourView} from "@/components/TakeATourView";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import { SiteHeader } from "@/components/site-header"
@@ -90,7 +89,6 @@ export default function Page() {
                         </>
                     )}
                     {activeView === "projects" && <ProjectsView setCurrentView={handleSetView} />}
-                    {activeView === "askMedAI" && <AskMedAIView />}
                     {activeView === "takeatour" && <TakeATourView setActiveView={setActiveView} />}
                 </div>
             </SidebarInset>
