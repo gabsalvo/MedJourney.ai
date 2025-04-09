@@ -12,6 +12,7 @@ import { SettingsPanel } from "@/components/settings-panel";
 import { ResultsPanel } from "@/components/results-panel";
 import { ExplainableAIPanel } from "@/components/explainable-ai-view";
 import {buildPrompt} from "@/lib/buildprompt";
+import {MedAiChat} from "@/components/med-ai-chat";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -31,8 +32,7 @@ export function Dashboard({ setActiveView }: DashboardProps) {
     const [isEngineLoading, setIsEngineLoading] = useState(false);
     const [interpretation, setInterpretation] = useState<string | null>(null);
     const [labelsData, setLabelsData] = useState<Record<string, string> | null>(null);
-
-
+    const [showMedAIChat, setShowMedAIChat] = useState(false);
 
 
     // 2. Callback chiamata da SettingsPanel a fine analisi
@@ -108,11 +108,21 @@ export function Dashboard({ setActiveView }: DashboardProps) {
 
                         {/* Bottom: Explainable AI */}
                         <ResizablePanel defaultSize={30} minSize={10} maxSize={100}>
-                            <ExplainableAIPanel isLoading={isLoading || isEngineLoading} modelresponse={interpretation} setModelresponse={setInterpretation}/>
+                            <ExplainableAIPanel isLoading={isLoading || isEngineLoading} modelresponse={interpretation} setModelresponse={setInterpretation} onStartChat={() => setShowMedAIChat(true)}/>
                         </ResizablePanel>
                     </ResizablePanelGroup>
                 </ResizablePanel>
             </ResizablePanelGroup>
+            <MedAiChat
+                open={showMedAIChat}
+                onOpenChange={setShowMedAIChat}
+                initialMessage={interpretation}
+                manifest={manifestData}
+                clusters={clustersData}
+                xai={xaiData}
+                labels={labelsData}
+            />
+
         </div>
 
     <div className="flex md:hidden flex-col h-screen overflow-y-auto p-4 space-y-4">
@@ -124,7 +134,7 @@ export function Dashboard({ setActiveView }: DashboardProps) {
             <ResultsPanel clusters={clustersData} isLoading={isLoading} setClusters={setClustersData}/>
         </div>
         <div>
-            <ExplainableAIPanel isLoading={isLoading || isEngineLoading} modelresponse={interpretation} setModelresponse={setInterpretation}/>
+            <ExplainableAIPanel isLoading={isLoading || isEngineLoading} modelresponse={interpretation} setModelresponse={setInterpretation} onStartChat={() => setShowMedAIChat(true)}/>
         </div>
     </div>
 </>

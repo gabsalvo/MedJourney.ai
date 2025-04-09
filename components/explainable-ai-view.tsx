@@ -1,6 +1,6 @@
 "use client";
 
-import { TextIcon, SparklesIcon, Copy, BookDashed } from "lucide-react";
+import { TextIcon, SparklesIcon, Copy, BookDashed, Download } from "lucide-react";
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import React, { useState } from "react";
@@ -13,9 +13,10 @@ interface ExplainableAIPanelProps {
     isLoading: boolean;
     modelresponse: string | null;
     setModelresponse: (val: string | null) => void;
+    onStartChat: () => void; // ✅ aggiunto
 }
 
-export function ExplainableAIPanel({ isLoading, modelresponse, setModelresponse }: ExplainableAIPanelProps) {
+export function ExplainableAIPanel({ isLoading, modelresponse, setModelresponse, onStartChat }: ExplainableAIPanelProps) {
     const [copied, setCopied] = useState(false);
 
     const handleCopy = () => {
@@ -86,7 +87,7 @@ export function ExplainableAIPanel({ isLoading, modelresponse, setModelresponse 
                     <Button
                         variant="ghost"
                         size="icon"
-                        className="absolute top-2 right-2 h-6 w-6 text-gray-500 hover:text-black"
+                        className="absolute top-2 right-2 h-6 w-6 text-gray-500 hover:text-black cursor pointer"
                         onClick={handleCopy}
                     >
                         <Copy className="h-4 w-4" />
@@ -94,7 +95,7 @@ export function ExplainableAIPanel({ isLoading, modelresponse, setModelresponse 
                     <Button
                         variant="ghost"
                         size="icon"
-                        className="absolute top-2 right-10 h-6 w-6 text-gray-500 hover:text-black"
+                        className="absolute top-2 right-10 h-6 w-6 text-gray-500 hover:text-black cursor pointer"
                         onClick={() => {
                             if (!modelresponse) return;
                             const blob = new Blob([modelresponse], { type: "text/markdown" });
@@ -106,17 +107,24 @@ export function ExplainableAIPanel({ isLoading, modelresponse, setModelresponse 
                             URL.revokeObjectURL(url);
                         }}
                     >
-                        <TextIcon className="h-4 w-4" />
+                        <Download className="h-4 w-4" />
                     </Button>
                     <Button
                         variant="ghost"
                         size="icon"
-                        className="absolute top-2 right-18 h-6 w-6 text-gray-500 hover:text-black"
+                        className="absolute top-2 right-24 h-6 w-6 text-gray-500 hover:text-black cursor pointer"
                         onClick={() => setModelresponse(null)}
                     >
-                     <BookDashed className="h-4 w-4" />
+                     <BookDashed className="h-4 w-4" /> Clear
                     </Button>
-
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        className="absolute top-2 right-48 h-6 w-6 text-blue-700 hover:text-blue-500 cursor pointer"
+                        onClick={onStartChat}
+                    >
+                        <SparklesIcon className="h-4 w-4" /> Ask MedAI
+                    </Button>
                     {/* 🧠 Scrollable Text */}
                     <CardContent className="h-full px-2 pt-4 pb-2">
                         <ScrollArea className="max-h-[400px] w-full pr-2 rounded-md border bg-white overflow-y-auto">

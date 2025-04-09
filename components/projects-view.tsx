@@ -9,7 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-
+import { Checkbox } from "@/components/ui/checkbox";
 import { ProjectDialog } from "@/components/project-dialog";
 import { createClient } from "@supabase/supabase-js";
 
@@ -57,8 +57,9 @@ export function ProjectsView({ setCurrentView }: ProjectsViewProps) {
     const [projectDialogOpen, setProjectDialogOpen] = useState(false);
     const [userId, setUserId] = useState<string | null>(null);
     const [selectedProjectName, setSelectedProjectName] = useState<string | null>(null);
+    const [deleteMode, setDeleteMode] = useState(false);
+    const [selectedForDelete, setSelectedForDelete] = useState<Set<number>>(new Set());
 
-    // Retrieve the authenticated user ID using Supabase auth.
     useEffect(() => {
         const getUserId = async () => {
             const {
@@ -76,7 +77,6 @@ export function ProjectsView({ setCurrentView }: ProjectsViewProps) {
         getUserId();
     }, []);
 
-    // Fetch projects from your backend when userId is set.
     useEffect(() => {
         if (!userId) return;
         console.log("🔐 User ID Supabase:", userId);
@@ -102,12 +102,10 @@ export function ProjectsView({ setCurrentView }: ProjectsViewProps) {
             });
     }, [userId]);
 
-    // Filter projects by search term.
     const filteredProjects = projects.filter((proj) =>
         proj.name.toLowerCase().includes(search.toLowerCase())
     );
 
-    // Handlers for renaming and deleting projects (for in-memory updates).
     const handleRename = (id: number) => {
         setProjects((prev) =>
             prev.map((project) =>
@@ -117,27 +115,67 @@ export function ProjectsView({ setCurrentView }: ProjectsViewProps) {
         setEditingId(null);
     };
 
-
-    // When a project card is clicked, store the selected project name and open the dialog.
     const handleProjectClick = (projectName: string) => {
         setSelectedProjectName(projectName);
         setProjectDialogOpen(true);
     };
 
+    const handleConfirmDelete = async () => {
+        if (!userId || selectedForDelete.size === 0) return;
+
+        const promises = Array.from(selectedForDelete).map(async (projectId) => {
+            const project = projects.find((p) => p.id === projectId);
+            if (!project) return;
+
+            const res = await fetch(
+                `${API_BASE}/delete-project?user_id=${encodeURIComponent(userId)}&project_name=${encodeURIComponent(project.name)}`
+            );
+
+            if (!res.ok) {
+                const errorText = await res.text();
+                console.error(`Failed to delete project ${project.name}: ${errorText}`);
+            }
+        });
+
+        await Promise.all(promises);
+
+        setProjects((prev) => prev.filter((p) => !selectedForDelete.has(p.id)));
+        setDeleteMode(false);
+        setSelectedForDelete(new Set());
+    };
+
     return (
         <div className="p-6 space-y-6">
-            <div className="flex justify-between items-center mb-4">
-                <div className="flex items-center">
-                    <FolderIcon className="mr-2 h-5 w-5 text-blue-700" />
+            <div className="flex justify-between items-center mb-4 gap-4">
+                <div className="flex items-center gap-2">
+                    <FolderIcon className="h-5 w-5 text-blue-700" />
                     <h2 className="text-xl font-semibold">My Projects</h2>
                 </div>
-                <Button
-                    className="gap-2 cursor-pointer hover:bg-zinc-700"
-                    onClick={() => setCurrentView("dashboard")}
-                >
-                    <FolderPlusIcon className="h-4 w-4" />
-                    Start New Project
-                </Button>
+
+                <div className="flex gap-2 ml-auto">
+                    {deleteMode ? (
+                        <>
+                            <Button variant="outline" onClick={() => {
+                                setDeleteMode(false);
+                                setSelectedForDelete(new Set());
+                            }}>
+                                Cancel
+                            </Button>
+                            <Button variant="destructive" onClick={handleConfirmDelete}>
+                                Confirm
+                            </Button>
+                        </>
+                    ) : (
+                        <Button variant="outline" onClick={() => setDeleteMode(true)}>
+                            🗑️ Delete a Project
+                        </Button>
+                    )}
+
+                    <Button className="gap-2" onClick={() => setCurrentView("dashboard") }>
+                        <FolderPlusIcon className="h-4 w-4" />
+                        Start New Project
+                    </Button>
+                </div>
             </div>
 
             <Input
@@ -152,8 +190,28 @@ export function ProjectsView({ setCurrentView }: ProjectsViewProps) {
                     <Card
                         key={project.id}
                         className="cursor-pointer hover:shadow-lg transition relative"
-                        onClick={() => handleProjectClick(project.name)}
+                        onClick={() => {
+                            if (!deleteMode) handleProjectClick(project.name);
+                        }}
                     >
+                        {deleteMode && (
+                            <div
+                                onClick={(e) => e.stopPropagation()}
+                                className="absolute top-3 right-3"
+                            >
+                                <Checkbox
+                                    className="border-2 border-blue-700 rounded-sm"
+                                    checked={selectedForDelete.has(project.id)}
+                                    onCheckedChange={(checked) => {
+                                        const newSelection = new Set(selectedForDelete);
+                                        if (checked) newSelection.add(project.id);
+                                        else newSelection.delete(project.id);
+                                        setSelectedForDelete(newSelection);
+                                    }}
+                                />
+                            </div>
+                        )}
+
                         <CardHeader className="flex justify-between items-center">
                             <CardTitle className="flex items-center gap-2">
                                 <ArchiveIcon className="h-5 w-5 text-blue-700" />

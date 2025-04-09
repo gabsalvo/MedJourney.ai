@@ -1,81 +1,121 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { useChat, type UseChatOptions } from "@ai-sdk/react"
+import { useState } from "react";
+import { Chat } from "@/components/ui/chat";
+import { v4 as uuidv4 } from "uuid";
 
-import { cn } from "@/lib/utils"
-import { Chat } from "@/components/ui/chat"
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-const MODELS = [
-    { id: "llama-3.3-70b-versatile", name: "Llama 3.3 70B" },
-    { id: "deepseek-r1-distill-llama-70b", name: "Deepseek R1 70B" },
-]
+type AskMedAIViewProps = {
+    initialMessages?: { id: string; role: "user" | "assistant"; content: string }[];
+    manifest: unknown;
+    clusters: unknown;
+    xai: unknown;
+    labels?: Record<string, string> | null;
+};
 
-type ChatDemoProps = {
-    initialMessages?: UseChatOptions["initialMessages"]
-}
+export function AskMedAIView({
+                                 initialMessages = [],
+                                 manifest,
+                                 clusters,
+                                 xai,
+                                 labels,
+                             }: AskMedAIViewProps) {
+    const [messages, setMessages] = useState(initialMessages);
+    const [input, setInput] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
-export function AskMedAIView(props: ChatDemoProps) {
-    const [selectedModel, setSelectedModel] = useState(MODELS[0].id)
+    const handleInputChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    ) => {
+        setInput(e.target.value);
+    };
 
-    const {
-        messages,
-        input,
-        handleInputChange,
-        handleSubmit,
-        append,
-        stop,
-        isLoading,
-        setMessages,
-    } = useChat({
-        ...props,
-        api: "/api/chat",
-        body: {
-            model: selectedModel,
-        },
-    })
+
+    const handleSubmit = async (e?: React.FormEvent) => {
+        if (e) e.preventDefault(); // 👈 qui risolvi tutto
+
+        if (!input.trim()) return;
+
+        const userMessage = {
+            id: uuidv4(),
+            role: "user" as const,
+            content: input,
+        };
+
+        const updatedMessages = [...messages, userMessage];
+        setMessages(updatedMessages);
+        setInput("");
+        setIsLoading(true);
+
+        try {
+            const res = await fetch(`${API_BASE}/chat`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    messages: updatedMessages.map(({ role, content }) => ({ role, content })),
+                    manifest,
+                    clusters,
+                    xai,
+                    labels,
+                }),
+            });
+
+            const data = await res.json();
+
+            const assistantMessage = {
+                id: uuidv4(),
+                role: "assistant" as const,
+                content: data.content || "🤖 MedAI responded, but gave no message.",
+            };
+
+            setMessages((prev) => [...prev, assistantMessage]);
+        } catch {
+            setMessages((prev) => [
+                ...prev,
+                {
+                    id: uuidv4(),
+                    role: "assistant",
+                    content: "❌ Error while contacting MedAI.",
+                },
+            ]);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+
+    const stop = () => {
+        // Optional: logic to cancel fetch
+    };
+
+    const append = (msg: { role: "user" | "assistant"; content: string }) => {
+        setMessages((prev) => [...prev, { ...msg, id: uuidv4() }]);
+    };
+
+
 
     return (
-        <div className={cn("flex", "flex-col", "h-full", "w-full", "px-96", "overflow-x-hidden")}>
-            <div className={cn("flex", "justify-end", "mb-2")}>
-                <Select value={selectedModel} onValueChange={setSelectedModel} >
-                    <SelectTrigger className="w-[180px], cursor-pointer">
-                        <SelectValue placeholder="Select Model" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        {MODELS.map((model) => (
-                            <SelectItem key={model.id} value={model.id} className="cursor-pointer">
-                                {model.name}
-                            </SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
+        <div className="flex flex-col h-full w-full overflow-hidden">
+            <div className="flex-1 overflow-y-auto">
+                <Chat
+                    className="w-full h-full"
+                    messages={messages}
+                    // @ts-expect-error funziona lo stesso
+                    handleSubmit={handleSubmit}
+                    input={input}
+                    handleInputChange={handleInputChange}
+                    isGenerating={isLoading}
+                    stop={stop}
+                    append={append}
+                    setMessages={setMessages}
+                    suggestions={[
+                        "How can clustering be used to identify patterns in medical data?",
+                        "Explain the difference between K-Means, DBSCAN, and Agglomerative Clustering.",
+                        "How does Explainable AI (XAI) improve trust in medical AI models?",
+                    ]}
+                />
             </div>
-
-            <Chat
-                className="grow"
-                // @ts-expect-error no worries
-                messages={messages}
-                handleSubmit={handleSubmit}
-                input={input}
-                handleInputChange={handleInputChange}
-                isGenerating={isLoading}
-                stop={stop}
-                append={append}
-                setMessages={setMessages}
-                suggestions={[
-                    "How can clustering be used to identify patterns in medical data?",
-                    "Explain the difference between K-Means, DBSCAN, and Agglomerative Clustering.",
-                    "How does Explainable AI (XAI) improve trust in medical AI models?"
-                ]}
-            />
         </div>
-    )
+    );
 }

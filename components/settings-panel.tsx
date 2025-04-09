@@ -346,7 +346,7 @@ export function SettingsPanel({ onAnalysisDone, setIsLoading, isLoading}: Settin
                                         <SelectItem value="kmeans">K-Means</SelectItem>
                                         <SelectItem value="agglomerative">Agglomerative</SelectItem>
                                         <SelectItem value="dbscan">DBSCAN</SelectItem>
-                                        {/* <SelectItem value="auto">MedAI takes care of it</SelectItem> */}
+                                        <SelectItem value="auto">MedAI takes care of it</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>

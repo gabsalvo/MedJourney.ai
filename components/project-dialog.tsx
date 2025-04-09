@@ -132,48 +132,6 @@ export function ProjectDialog({
                                 </Button>
                             </div>
                         )}
-                        <div className="mt-4">
-                            <Label className="text-sm font-semibold mb-2 block text-red-600">
-                                Danger Zone
-                            </Label>
-                            <Button
-                                variant="destructive"
-                                className="cursor-pointer"
-                                onClick={async () => {
-                                    const confirmDelete = confirm("Are you sure you want to delete this project?");
-                                    if (!confirmDelete) return;
-
-                                    try {
-                                        setLoading(true);
-                                        const res = await fetch(`${API_BASE}/delete-project`, {
-                                            method: "GET",
-                                            headers: {
-                                                "Content-Type": "application/json",
-                                            },
-                                            body: JSON.stringify({
-                                                user_id: userId,
-                                                project_name: projectName,
-                                            }),
-                                        });
-
-                                        if (!res.ok) {
-                                            const text = await res.text();
-                                            throw new Error(`Delete failed: ${text}`);
-                                        }
-
-                                        alert("✅ Project deleted successfully.");
-                                        onOpenChange(false); // Close dialog
-                                    } catch (err) {
-                                        console.error(err);
-                                        alert("❌ Failed to delete project.");
-                                    } finally {
-                                        setLoading(false);
-                                    }
-                                }}
-                            >
-                                Delete Project
-                            </Button>
-                        </div>
                     </>
                 )}
             </DialogContent>
