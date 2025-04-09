@@ -53,7 +53,7 @@ const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
 export function SettingsPanel({ onAnalysisDone, setIsLoading, isLoading}: SettingsPanelProps) {
     const [currentStep, setCurrentStep] = useState(1);
     const [algo, setAlgo] = useState<"kmeans" | "agglomerative" | "dbscan" | "auto">(
-        "kmeans"
+        "auto"
     );
     const [files, setFiles] = useState<File[]>([]);
     const [dragActive, setDragActive] = useState(false);
