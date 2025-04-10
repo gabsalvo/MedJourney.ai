@@ -7,6 +7,7 @@ import {
     YAxis,
     CartesianGrid,
     ResponsiveContainer,
+    TooltipProps,
     Tooltip as RechartsTooltip,
 } from "recharts";
 import {
@@ -17,7 +18,7 @@ import {
 import {
     Tooltip,
     TooltipTrigger,
-    TooltipContent,
+    TooltipContent
 } from "@/components/ui/tooltip";
 import { InfoIcon, ClipboardCopyIcon, ChevronDown } from "lucide-react";
 import { buildLabel } from "@/lib/buildLabel";
@@ -32,7 +33,7 @@ type ClusterPoint = {
     sample_id?: string;
     label?: string;
     metadata?: Record<string, string>;
-    [key: string]: any;
+    [key: string]: unknown;
 };
 
 interface ClusteringChartProps {
@@ -70,7 +71,10 @@ export function ClusteringChart({ points }: ClusteringChartProps) {
         return acc;
     }, {} as Record<string, { label: string; color: string }>);
 
-    const CustomTooltip = ({ active, payload }: any) => {
+    const CustomTooltip = ({
+                               active,
+                               payload,
+                           }: TooltipProps<number, string>) => {
         if (active && payload?.length) {
             const data = payload[0].payload as ClusterPoint;
             const metadataEntries = data.metadata ? Object.entries(data.metadata) : [];
@@ -117,6 +121,7 @@ export function ClusteringChart({ points }: ClusteringChartProps) {
         }
         return null;
     };
+
 
     return (
         <div className="w-full space-y-3">
