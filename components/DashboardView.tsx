@@ -40,7 +40,8 @@ export function Dashboard({ setActiveView }: DashboardProps) {
         clusters: unknown,
         manifest: unknown,
         xai: unknown,
-        labels: Record<string, string>
+        labels: Record<string, string>,
+        fileText: string
     ) => {
         setClustersData(clusters);
         setManifestData(manifest);
@@ -52,7 +53,7 @@ export function Dashboard({ setActiveView }: DashboardProps) {
                 const res = await fetch(`${API_BASE}/interpret`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ prompt: buildPrompt({manifest, clusters, xai, labels: labelsData })}),
+                    body: JSON.stringify({ prompt: buildPrompt({manifest, clusters, xai, labels: labelsData, fileUser: fileText })}),
                 });
                 const data = await res.json();
                 setInterpretation(data.interpretation || "✅ LLM responded, but gave no interpretation.");
@@ -101,7 +102,7 @@ export function Dashboard({ setActiveView }: DashboardProps) {
                     <ResizablePanelGroup direction="vertical" >
                         {/* Top: Results */}
                         <ResizablePanel defaultSize={63} minSize={20} maxSize={100} className="border-b border-gray-300">
-                            <ResultsPanel clusters={clustersData} isLoading={isLoading} setClusters={setClustersData}/>
+                            <ResultsPanel clusters={clustersData} isLoading={isLoading} setClusters={setClustersData} labels={labelsData}/>
                         </ResizablePanel>
 
                         <ResizableHandle withHandle />
@@ -131,7 +132,7 @@ export function Dashboard({ setActiveView }: DashboardProps) {
             <SettingsPanel onAnalysisDone={handleAnalysisDone} setIsLoading={setIsLoading} isLoading={isLoading} setCurrentView={setActiveView}/>
         </div>
         <div>
-            <ResultsPanel clusters={clustersData} isLoading={isLoading} setClusters={setClustersData}/>
+            <ResultsPanel clusters={clustersData} isLoading={isLoading} setClusters={setClustersData} labels={labelsData}/>
         </div>
         <div>
             <ExplainableAIPanel isLoading={isLoading || isEngineLoading} modelresponse={interpretation} setModelresponse={setInterpretation} onStartChat={() => setShowMedAIChat(true)}/>

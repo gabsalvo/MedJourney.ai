@@ -13,6 +13,7 @@ interface ResultsPanelProps {
     clusters: unknown;
     isLoading: boolean;
     setClusters: (val: null) => void
+    labels: Record<string, string> | null;
 }
 
 type ClusterPoint = {
@@ -28,7 +29,7 @@ function isValidClusterData(data: unknown): data is { points: ClusterPoint[] } {
     );
 }
 
-export function ResultsPanel({ clusters, isLoading, setClusters }: ResultsPanelProps) {
+export function ResultsPanel({ clusters, isLoading, setClusters, labels }: ResultsPanelProps) {
     if (isLoading) {
         return (
             <Card className="h-[450px] flex flex-col ml-5">
@@ -96,7 +97,13 @@ export function ResultsPanel({ clusters, isLoading, setClusters }: ResultsPanelP
                     </Button>
                 </CardHeader>
                 <CardContent className="flex flex-col justify-center items-center flex-grow">
-                    <ClusteringChart points={clusters.points} />
+                    <ClusteringChart
+                        points={clusters.points.map((pt, i) => ({
+                            ...pt,
+                            sample_id: `Sample ${i + 1}`, // or pt.sample_id if available
+                            label: labels?.[`Sample ${i + 1}`] ?? "—",
+                        }))}
+                    />
                 </CardContent>
             </Card>
         );

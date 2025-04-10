@@ -7,6 +7,8 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button"
 import {ScrollArea} from "@/components/ui/scroll-area";
 import ReactMarkdown from "react-markdown";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip"; // assicurati sia importato
+
 
 
 interface ExplainableAIPanelProps {
@@ -84,14 +86,21 @@ export function ExplainableAIPanel({ isLoading, modelresponse, setModelresponse,
             <CardContent className="flex flex-col items-start justify-center px-4 gap-2 h-full">
                 <Card className="bg-zinc-50 rounded-md shadow-sm w-full relative ">
                     {/* 📋 Copy Button */}
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        className="absolute top-2 right-2 h-6 w-6 text-gray-500 hover:text-black cursor pointer"
-                        onClick={handleCopy}
-                    >
-                        <Copy className="h-4 w-4" />
-                    </Button>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                className="absolute top-2 right-2 h-6 w-6 text-gray-500 hover:text-black cursor pointer"
+                                onClick={handleCopy}
+                            >
+                                <Copy className="h-4 w-4" />
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent side="top" className="text-xs">
+                            {copied ? "Copied!" : "Copy to clipboard"}
+                        </TooltipContent>
+                    </Tooltip>
                     <Button
                         variant="ghost"
                         size="icon"
@@ -149,13 +158,6 @@ export function ExplainableAIPanel({ isLoading, modelresponse, setModelresponse,
                     </CardContent>
 
                 </Card>
-
-                {/* ✅ Copied feedback */}
-                {copied && (
-                    <span className="text-xs text-green-600 animate-pulse ml-1 mt-1">
-                        Copied to clipboard!
-                    </span>
-                )}
             </CardContent>
         </Card>
     );
