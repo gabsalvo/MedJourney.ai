@@ -17,9 +17,13 @@ interface ResultsPanelProps {
 }
 
 type ClusterPoint = {
-    [key: string]: number | string;
+    x: number;
+    y: number;
     cluster: number;
+    sample_id?: string;
+    label?: string;
 };
+
 function isValidClusterData(data: unknown): data is { points: ClusterPoint[] } {
     return (
         typeof data === "object" &&
