@@ -42,7 +42,6 @@ interface SettingsPanelProps {
         manifest: unknown,
         xai: unknown,
         labels: Record<string, string>,
-        fileText: string
     ) => void;
     setIsLoading: (value: boolean) => void
     isLoading: boolean;
@@ -116,8 +115,6 @@ export function SettingsPanel({ onAnalysisDone, setIsLoading, isLoading}: Settin
             // 3) Costruisci i parametri in base all'algoritmo
             const params = buildParams();
 
-            // 🔥 Leggi contenuto del file per MedAI
-            const rawText = await files[0].text();
 
             // 4) Prepara FormData
             const formData = new FormData();
@@ -151,7 +148,7 @@ export function SettingsPanel({ onAnalysisDone, setIsLoading, isLoading}: Settin
 
             const { clusters, manifest, xai, labels } = data.frontend_data;
             // CHIAMA LA CALLBACK
-            onAnalysisDone(clusters, manifest, xai, labels, rawText);
+            onAnalysisDone(clusters, manifest, xai, labels);
 
         } catch (err) {
             console.error("Errore durante l’analisi:", err);

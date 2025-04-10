@@ -41,7 +41,6 @@ export function Dashboard({ setActiveView }: DashboardProps) {
         manifest: unknown,
         xai: unknown,
         labels: Record<string, string>,
-        fileText: string
     ) => {
         setClustersData(clusters);
         setManifestData(manifest);
@@ -53,7 +52,7 @@ export function Dashboard({ setActiveView }: DashboardProps) {
                 const res = await fetch(`${API_BASE}/interpret`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ prompt: buildPrompt({manifest, clusters, xai, labels: labelsData, fileUser: fileText })}),
+                    body: JSON.stringify({ prompt: buildPrompt({manifest, clusters, xai, labels: labelsData})}),
                 });
                 const data = await res.json();
                 setInterpretation(data.interpretation || "✅ LLM responded, but gave no interpretation.");
